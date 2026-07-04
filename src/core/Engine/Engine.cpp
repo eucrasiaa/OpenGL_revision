@@ -24,7 +24,7 @@ bool Engine::init() {
 
 
 void Engine::update(double dt) {
-  for (auto *node : sceneNodes){
+  for (auto *node : sceneNodes_){
 
     node->update(dt);
   }
@@ -71,7 +71,7 @@ void Engine::run() {
 #endif
     while (accumulator >= FIXED_DT) {
       update(FIXED_DT);
-      accumulator -= FIXED_DT;
+      // accumulator -= FIXED_DT;
     }
 #ifdef PERFORMANCE
     uint64_t endUpdate = SDL_GetPerformanceCounter();
@@ -111,21 +111,21 @@ void Engine::run() {
 }
 void Engine::addNode(Node* node) {
   if (node != nullptr) {
-    sceneNodes.push_back(node);
+    sceneNodes_.push_back(node);
   }
 }
 
 void Engine::shutdown() {
-  for (auto* node : sceneNodes) {
+  for (auto* node : sceneNodes_) {
     delete node;
   }
-  sceneNodes.clear();
+  sceneNodes_.clear();
   renderServer_->shutdown();
 }
 
 
 void Engine::render(double ft) {
-  for (auto* node : sceneNodes) {
+  for (auto* node : sceneNodes_) {
     if (node != nullptr) { 
       continue;
     }

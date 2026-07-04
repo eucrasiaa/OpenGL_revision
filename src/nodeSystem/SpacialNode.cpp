@@ -36,6 +36,8 @@ void SpacialNode::computeTransforms(const glm::mat4& parentTransform) {
   //update basis 
   right_ = glm::normalize(glm::vec3(globalTransform_[0]));
   up_ = glm::normalize(glm::vec3(globalTransform_[1]));
+
+  // consider it might be backwasrds ?
   forward_ = glm::normalize(glm::vec3(globalTransform_[2]));
   
   isDirty_ = false;

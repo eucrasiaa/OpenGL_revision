@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/IEngine.hpp"
 // #include <glad/glad.h>
 // #include <SDL2/SDL.h>
 // #include <glm/trigonometric.hpp>
@@ -10,15 +11,16 @@ class Node;
 class IRenderServer;
 class IInputManager;
 
-class Engine {
+class Engine : public IEngine{
   private:
 
-    //injected
+    //injected OBSERVERS (uses, doesnt own)
     IRenderServer* renderServer_ = nullptr;
     IInputManager* inputManager_ = nullptr; 
     
     //owned 
-    std::vector<Node*> sceneNodes; // change ptr type maybe 
+    std::vector<Node*> sceneNodes_; // change ptr type maybe 
+    // std::vector<std::unique_ptr<Node>> sceneNodes_; 
 
 
     //privs
@@ -42,7 +44,7 @@ class Engine {
 
     explicit Engine(IRenderServer* renderServer) 
       : renderServer_(renderServer) {
-        if (!renderServer) {
+        if (!renderServer_) {
           throw std::runtime_error("RenderServer cannot be null");
         }
       }
