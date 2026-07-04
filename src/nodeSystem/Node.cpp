@@ -1,113 +1,185 @@
 #include "Node.hpp"
+#include <algorithm> 
+#include <stdexcept>
+#include <print>
 
-
-#pragma once
-#include "./wtypes/Vec2.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include <vector>
-
+Node::Node(IRenderServer* renderServer) : renderServer_(renderServer) {
+  if (!renderServer) {
+    throw std::runtime_error("RenderServer cannot be null");
+  }
+}
 Node::~Node() {
-  for (auto *elem : children) {
-    delete elem;
+  for (auto* child : children_) {
+    delete child;
+  }
+  children_.clear();
+}
+void Node::addChild(Node* child) {
+  if (child) {
+    child->parent_ = this;
+    children_.push_back(child);
+  }
+}
+
+
+void Node::removeChild(Node* child) {
+  auto it = std::find(children_.begin(), children_.end(), child);
+  if (it != children_.end()) {
+    (*it)->parent_ = nullptr;
+    children_.erase(it);
   }
 }
 
 void Node::update(double dt) {
-  for (auto *elem : children) {
+  for (auto *elem : children_) {
     elem->update(dt);
   }
 }
 
-void Node::triggerCompute(){ 
-  // swap to a render call now
-  render(glm::mat4(1.0f),  isDirty);
-  // computeTransforms(glm::mat4(1.0f),  isDirty);
-}
+Node* Node::getParent() const { return parent_; }
+
+const std::vector<Node*>& Node::getChildren() const { return children_; }
 
 
-void Node::render(const glm::mat4 &parentTransform, bool parentIsDirty)  {
-  computeTransforms(parentTransform, parentIsDirty);
-  for (auto *elem : children) {
-    elem->render(this->globalTransform, this->isDirty);
+
+#ifdef FANCY_PRINT
+#include "ansi_control.hpp"
+#endif
+void Node::printInfo(bool recurse, int indent){
+#ifdef FANCY_PRINT
+  std::print("{}",term::BoxBuilder() 
+    .style(term::box::SINGLE) 
+    .title("NODE: ")
+    .add_line("Children: {} ", children_.size())
+    .add_line("Parent: {}", (parent_ != nullptr) ? reinterpret_cast<std::uintptr_t>(parent_) : 0x000000)
+    .build());
+  if(recurse){
+    for (auto *it : children_){
+      it->printInfo(true,indent+1);
+    }
   }
-  this->isDirty = false;
-}
+#else
+  std::print("{:{}} Node:\n","",indent);
+  std::print("{:{}} Children: {}\n","",indent, children_.size());
+  std::print("{:{}}Parent: {:#x}\n", "", indent, 
+      (parent_ != nullptr) ? reinterpret_cast<std::uintptr_t>(parent_) : 0);
+  std::print("{:{}}--------------------\n", "", indent);
+  indent=indent+5;
+  
 
+  if(recurse){
+    for (auto *it : children_){
+      it->printInfo(true,indent);      
+    }
+  }
+#endif
+}
+// #include "./wtypes/Vec2.hpp"
+// #include <glm/gtc/matrix_transform.hpp>
+// #include <vector>
+//
+// Node::~Node() {
+//   for (auto *elem : children) {
+//     delete elem;
+//   }
+// }
+//
+// void Node::update(double dt) {
+//   for (auto *elem : children) {
+//     elem->update(dt);
+//   }
+// }
+//
+// void Node::triggerCompute(){ 
+//   // swap to a render call now
+//   render(glm::mat4(1.0f),  isDirty);
+//   // computeTransforms(glm::mat4(1.0f),  isDirty);
+// }
+//
+//
+// void Node::render(const glm::mat4 &parentTransform, bool parentIsDirty)  {
+//   computeTransforms(parentTransform, parentIsDirty);
+//   for (auto *elem : children) {
+//     elem->render(this->globalTransform, this->isDirty);
+//   }
+//   this->isDirty = false;
+// }
+//
+// // void Node::computeTransforms(const glm::mat4& parentGlobal, bool parentIsDirty) {
+// //   bool needsRecalc = isDirty || parentIsDirty;
+// //
+// //   if (needsRecalc) {
+// //     //trs
+// //     localTransform = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, 0.0f));
+// //     localTransform = glm::rotate(localTransform, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+// //     localTransform = glm::scale(localTransform, glm::vec3(scale.x, scale.y, 1.0f));
+// //
+// //     //global
+// //     globalTransform = parentGlobal * localTransform;
+// //     //fixflag
+// //     isDirty = false;
+// //   }
+// //
+// //   //tick down!
+// //   for (auto* child : children) {
+// //     child->computeTransforms(globalTransform, needsRecalc);
+// //   }
+// // }
+//
 // void Node::computeTransforms(const glm::mat4& parentGlobal, bool parentIsDirty) {
 //   bool needsRecalc = isDirty || parentIsDirty;
 //
 //   if (needsRecalc) {
-//     //trs
-//     localTransform = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, 0.0f));
-//     localTransform = glm::rotate(localTransform, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-//     localTransform = glm::scale(localTransform, glm::vec3(scale.x, scale.y, 1.0f));
+//     glm::mat4 transform = glm::mat4(1.0f);
 //
-//     //global
+//     transform = glm::translate(transform, position);
+//
+//     // rotate: apply y, x, z - as per euler 
+//     transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)); // YAW
+//     transform = glm::rotate(transform, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)); // PITCH
+//     transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)); // ROLL
+//
+//     transform = glm::scale(transform, scale);
+//
+//     localTransform = transform;
 //     globalTransform = parentGlobal * localTransform;
-//     //fixflag
+//
 //     isDirty = false;
 //   }
-//
-//   //tick down!
+//   //tick down
 //   for (auto* child : children) {
 //     child->computeTransforms(globalTransform, needsRecalc);
 //   }
 // }
-
-void Node::computeTransforms(const glm::mat4& parentGlobal, bool parentIsDirty) {
-  bool needsRecalc = isDirty || parentIsDirty;
-
-  if (needsRecalc) {
-    glm::mat4 transform = glm::mat4(1.0f);
-
-    transform = glm::translate(transform, position);
-
-    // rotate: apply y, x, z - as per euler 
-    transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)); // YAW
-    transform = glm::rotate(transform, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)); // PITCH
-    transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)); // ROLL
-
-    transform = glm::scale(transform, scale);
-
-    localTransform = transform;
-    globalTransform = parentGlobal * localTransform;
-
-    isDirty = false;
-  }
-  //tick down
-  for (auto* child : children) {
-    child->computeTransforms(globalTransform, needsRecalc);
-  }
-}
-
-
-// void Node::render(const glm::mat4 &parentTransform = glm::mat4(1.0f)) {
-//   glm::mat4 globalTransform = parentTransform * calculateTransform();
 //
-//   for (auto *elem : children) {
-//     elem->render(globalTransform);
+//
+// // void Node::render(const glm::mat4 &parentTransform = glm::mat4(1.0f)) {
+// //   glm::mat4 globalTransform = parentTransform * calculateTransform();
+// //
+// //   for (auto *elem : children) {
+// //     elem->render(globalTransform);
+// //   }
+// // }
+//
+// void Node::addChild(Node *node) {
+//   if (node != nullptr) {
+//     children.push_back(node);
+//     node->parent=this;
 //   }
 // }
-
-void Node::addChild(Node *node) {
-  if (node != nullptr) {
-    children.push_back(node);
-    node->parent=this;
-  }
-}
-
-// void Node::computeTransforms() {
-//   // ident matrix
-//   glm::mat4 transform = glm::mat4(1.0f);
-//   // loc
-//   transform =
-//     glm::translate(transform, glm::vec3(position.x, position.y, 0.0f));
-//   // rot
-//   transform = glm::rotate(transform, glm::radians(rotation),
-//       glm::vec3(0.0f, 0.0f, 1.0f));
-//   // scale
-//   transform = glm::scale(transform, glm::vec3(scale.x, scale.y, 1.0f));
 //
-//   return transform;
-// }
-
+// // void Node::computeTransforms() {
+// //   // ident matrix
+// //   glm::mat4 transform = glm::mat4(1.0f);
+// //   // loc
+// //   transform =
+// //     glm::translate(transform, glm::vec3(position.x, position.y, 0.0f));
+// //   // rot
+// //   transform = glm::rotate(transform, glm::radians(rotation),
+// //       glm::vec3(0.0f, 0.0f, 1.0f));
+// //   // scale
+// //   transform = glm::scale(transform, glm::vec3(scale.x, scale.y, 1.0f));
+// //
+// //   return transform;
+// // }
+//

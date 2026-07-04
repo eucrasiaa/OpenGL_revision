@@ -1,3 +1,4 @@
+#include "ansi_control.hpp"
 #if defined(_WIN32)
 // #define NOMINMAX
 // #define WIN32_LEAN_AND_MEAN
@@ -23,6 +24,8 @@
 #include "RenderServer/RenderServer.hpp"
 #include "Engine/Engine.hpp"
 #include "nodeSystem/Node.hpp"
+#include "nodeSystem/SpacialNode.hpp"
+
 
 class ILogger {//: public ILogger {
 public:
@@ -40,6 +43,7 @@ public:
 static std::filesystem::path EXECUTABLE_DIR;
 
 int main(int argc, char* argv[]) {
+
 #if defined(_WIN32)
   wchar_t buffer[MAX_PATH];
   DWORD length = GetModuleFileNameW(NULL, buffer, MAX_PATH);
@@ -63,7 +67,10 @@ int main(int argc, char* argv[]) {
     throw std::runtime_error("macOS: Failed to retrieve executable path.");
   }
   EXECUTABLE_DIR = std::filesystem::weakly_canonical(std::filesystem::path(buffer)).parent_path();
-#endif 
+#endif
+
+
+
   SDL_SetMainReady(); 
   try {
     ILogger logger;
@@ -75,14 +82,15 @@ int main(int argc, char* argv[]) {
 
     Engine engine(&renderServer);
 
-    auto rootNode = new Node(&renderServer);
-    auto childNode = new Node(&renderServer);
+    auto rootNode = new SpacialNode(&renderServer);
+    auto childNode = new SpacialNode(&renderServer);
 
     rootNode->addChild(childNode);
     childNode->setPosition(glm::vec3(10.0f, 5.0f, 0.0f));
     childNode->setTextureHandle(0);
     engine.addNode(rootNode);
 
+    rootNode->printInfo(true);
 
     engine.run();
 
@@ -90,6 +98,7 @@ int main(int argc, char* argv[]) {
     std::cerr << "Fatal error: " << e.what() << std::endl;
     return 1;
   }
+  
   // if (!Engine::Get().init("OpenGL Engine Layout", 1280, 720)) {
   //   return 1;
   // }

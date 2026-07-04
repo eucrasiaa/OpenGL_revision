@@ -26,6 +26,10 @@ set(PROJECT_SOURCES
     src/nodeSystem/Node.cpp
 )
 
+file(GLOB_RECURSE PROJECT_SOURCES
+    "src/*.cpp"
+)
+
 file(GLOB_RECURSE PROJECT_HEADERS 
     "include/*.h" "include/*.hpp"
     "src/*.h" "src/*.hpp"
@@ -140,6 +144,7 @@ if(MINGW)
         imm32
         mingw32
         SDL2main 
+         -lstdc++exp
     )
 endif()
 
