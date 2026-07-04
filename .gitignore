@@ -1,0 +1,12 @@
+.cache/
+build/
+vgcore*
+CMakeFiles/
+srcGraph.py
+source_graph.dot
+detailed_source_graph.png
+
+assets/models/_
+assets/textures/_
+assets/shaders/_
+_*
