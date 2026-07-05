@@ -1,8 +1,12 @@
 #pragma once
 #include <glm/ext/matrix_float4x4.hpp>
 #include <vector>
-class IRenderServer;
+#include "RenderUtils/RenderTypes.hpp"
+#include <print>
 
+
+// typedef unsigned long long EntityID;
+class IRenderServer;
 class Node {
   protected:
     // injected
@@ -24,14 +28,11 @@ class Node {
     Node* getParent() const; 
 
     // game logic
-
-
     virtual void checkCalculate(const glm::mat4& parentTransform, bool parentIsDirty){ 
       for (auto *it: children_){
         it->checkCalculate(parentTransform,parentIsDirty);
       }
     };
-
 
     // ran on instance 
     void _init(); 
@@ -53,12 +54,4 @@ class Node {
     // // 
     // virtual void _movedInTree();
     virtual void printInfo(bool recurse = false, int indent=0);
-
-    // virtual ~Node();
-    // // virtual void render(const glm::mat4 &parentTransform);
-    // virtual void addChild(Node *node);
-    //
-    // virtual void render(const glm::mat4& parentGlobal, bool parentIsDirty);
-    // void triggerCompute();
-    // virtual void computeTransforms(const glm::mat4& parentGlobal, bool parentIsDirty);
 };

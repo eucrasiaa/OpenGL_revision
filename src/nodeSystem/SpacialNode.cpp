@@ -1,8 +1,9 @@
 #include "SpacialNode.hpp"
+#include <glm/gtc/quaternion.hpp>
 
 void SpacialNode::checkCalculate(const glm::mat4& parentTransform, bool parentIsDirty) {
 
-  if (parentIsDirty || isDirty_) {
+  if (parentIsDirty || localDirty_) {
     computeTransforms(parentTransform);
   }
   // RenderInstance instance;
@@ -14,10 +15,10 @@ void SpacialNode::checkCalculate(const glm::mat4& parentTransform, bool parentIs
   // Render children
 
   // for (auto* child : children_) {
-  //   child->checkCalculate(globalTransform_, isDirty_);
+  //   child->checkCalculate(globalTransform_, localDirty_);
   // }
 
-  isDirty_ = false;
+  localDirty_ = false;
 }
 
 
@@ -40,38 +41,38 @@ void SpacialNode::computeTransforms(const glm::mat4& parentTransform) {
   // consider it might be backwasrds ?
   forward_ = glm::normalize(glm::vec3(globalTransform_[2]));
   
-  isDirty_ = false;
+  localDirty_ = false;
 
 }
 void SpacialNode::setLocalTransform(const glm::mat4& transform) {
   localTransform_ = transform;
-  isDirty_ = true;
+  localDirty_ = true;
 }
 
 
 void SpacialNode::setPosition(const glm::vec3& position) {
   localTransform_[3] = glm::vec4(position, 1.0f);
-  isDirty_ = true;
+  localDirty_ = true;
 }
 void SpacialNode::setRotation(const glm::quat& rotation) {
   //TODO
 
-  isDirty_ = true;
+  localDirty_ = true;
 }
 void SpacialNode::setScale(const glm::vec3& scale) {
   //TODO
 
-  isDirty_ = true;
+  localDirty_ = true;
 }
 void SpacialNode::markDirty() {
-  isDirty_ = true;
+  localDirty_ = true;
 }
 void SpacialNode::printInfo(bool recurse, int indent) {
   std::print("{:{}}Spacial Node:\n", "", indent);
   std::print("{:{}}  Children: {}\n", "", indent, children_.size());
   std::print("{:{}}  Parent: {:#x}\n", "", indent, 
       (parent_ != nullptr) ? reinterpret_cast<std::uintptr_t>(parent_) : 0);
-  std::print("{:{}}  Dirty State: {}\n", "", indent, isDirty_ ? "true" : "false");
+  std::print("{:{}}  Dirty State: {}\n", "", indent, localDirty_ ? "true" : "false");
 
   std::print("{:{}}  Rotation (Quat): [w: {:.2f}, x: {:.2f}, y: {:.2f}, z: {:.2f}]\n", 
       "", indent, quaternion_.w, quaternion_.x, quaternion_.y, quaternion_.z);

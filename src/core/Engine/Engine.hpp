@@ -6,10 +6,16 @@
 #include <vector>
 #include <memory>
 
+#define PERFORMANCE
+#ifdef PERFORMANCE 
+#include <print>
+#include "ansi_min.hpp"
+#endif
 
 class Node;
 class IRenderServer;
 class IInputManager;
+class ILogger;
 
 class Engine : public IEngine{
   private:
@@ -17,13 +23,14 @@ class Engine : public IEngine{
     //injected OBSERVERS (uses, doesnt own)
     IRenderServer* renderServer_ = nullptr;
     IInputManager* inputManager_ = nullptr; 
-    
+
+    ILogger* logger_ = nullptr; 
     //owned 
     std::vector<Node*> sceneNodes_; // change ptr type maybe 
-    // std::vector<std::unique_ptr<Node>> sceneNodes_; 
+                                    // std::vector<std::unique_ptr<Node>> sceneNodes_; 
 
 
-    //privs
+                                    //privs
     void handleEvents();
     void update(double dt);
     void render(double dt);
@@ -38,16 +45,24 @@ class Engine : public IEngine{
     // ~Engine() { shutdown(); }
     // Engine(const Engine&) = delete;
     // Engine& operator=(const Engine&) = delete;
-
+#ifdef PERFORMANCE 
+    inline void print_engine_perf(double fps, double total_ms, double update_ms, double render_ms);
+#endif 
 
   public:
 
-    explicit Engine(IRenderServer* renderServer) 
-      : renderServer_(renderServer) {
-        if (!renderServer_) {
-          throw std::runtime_error("RenderServer cannot be null");
-        }
+    explicit Engine(IRenderServer* renderServer, ILogger* logger) 
+      : renderServer_(renderServer),
+        logger_(logger){
+        if (!renderServer_) { throw std::runtime_error("RenderServer cannot be null"); }
+        if (!logger_) { throw std::runtime_error("Logger cannot be null"); }
       }
+    // explicit Engine(IRenderServer* renderServer) 
+    //   : renderServer_(renderServer) {
+    //     if (!renderServer_) {
+    //       throw std::runtime_error("RenderServer cannot be null");
+    //     }
+    //   }
     
     ~Engine() { shutdown(); }
 

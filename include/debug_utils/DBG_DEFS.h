@@ -1,6 +1,5 @@
 #pragma once
 #define RENDERINSTANCE_DBG
-// #define FANCY_PRINT
 
 // #define NODE_DEBUG 
 // #define RENDERSERVER_DEBUG

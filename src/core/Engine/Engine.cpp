@@ -1,64 +1,54 @@
 #include "Engine.hpp"
 #include "RenderServer/RenderServer.hpp"
 #include "Node.hpp"
-
 #include <SDL_error.h>
 #include <SDL_events.h>
 #include <SDL_timer.h>
 
+#include "Logger/ILogger.hpp"
+#include "Logger/LoggerBasic.hpp"
 // #include <glad/glad.h>
-
 // #include "RenderServer.hpp"
-
-
 // bool Engine::init(const char* title, int width, int height) {
 bool Engine::init() {
-  // if(!RenderServer::Get().init(title, width, height)){
-    // std::cerr<<"render server failed to initialize!\n";
-    // return false;
-  // }
-  
   isRunning_ = true;
   return true;
 }
 
-
 void Engine::update(double dt) {
   for (auto *node : sceneNodes_){
-
     node->update(dt);
   }
-  // if (sceneNodes.size() > 1) {
-  //   Node* player = sceneNodes[1];
-  //
-  //   float speed = 150.0f;
-  //   player->position.x += speed * static_cast<float>(dt);
-  // }
 }
-
+#define PERFORMANCE
 
 void Engine::run() {
-  double accumulator = 0.0;
-  const double FIXED_DT = 1.0 / 60.0; 
-  const double MAX_DELTA = 0.25;
 #ifdef PERFORMANCE
-  double fpsTimer = 0.0;
-  int frameCount = 0;
-  uint64_t totalUpdateTicks = 0;
-  uint64_t totalRenderTicks = 0;
+  double PERFORMANCE_fpsTimer = 0.0;
+  int PERFORMANCE_frameCount = 0;
+  uint64_t PERFORMANCE_totalUpdateTicks = 0;
+  uint64_t PERFORMANCE_totalRenderTicks = 0;
 #endif
+
+  const double FIXED_TIMESTEP = 1.0 / 60.0; 
+  const double MAX_DELTA = 0.25;
+  double accumulator = 0.0;
   double elapsedTime = 0.0;
+  double alpha_interp =  0.0; //accumulator / FIXED_TIMESTEP; 
   uint64_t frequency = SDL_GetPerformanceFrequency();
-  uint64_t currentTicks = SDL_GetPerformanceCounter();
+  const double INV_FREQUENCY = 1.0 / static_cast<double>(SDL_GetPerformanceFrequency());
+
+  uint64_t currentTicks = SDL_GetPerformanceCounter(); // keep this right before while!
   while (isRunning_) {
     uint64_t newTicks = SDL_GetPerformanceCounter();
 
 #ifdef PERFORMANCE
-    double rawFrameTime = static_cast<double>(newTicks - currentTicks) / frequency;
+    double PERFORMANCE_rawFrameTime = static_cast<double>(newTicks - currentTicks) / frequency;
 #endif
-    double frameTime = static_cast<double>(newTicks - currentTicks) / frequency;
-    currentTicks = newTicks;
 
+    //double frameTime = static_cast<double>(newTicks - currentTicks) / frequency;
+    double frameTime = static_cast<double>(newTicks - currentTicks) * INV_FREQUENCY;
+    currentTicks = newTicks;
     if (frameTime > MAX_DELTA) {
       frameTime = MAX_DELTA;
     }
@@ -69,17 +59,17 @@ void Engine::run() {
 #ifdef PERFORMANCE
     uint64_t startUpdate = SDL_GetPerformanceCounter();
 #endif
-    while (accumulator >= FIXED_DT) {
-      update(FIXED_DT);
-      // accumulator -= FIXED_DT;
+    while (accumulator >= FIXED_TIMESTEP) {
+      update(FIXED_TIMESTEP);
+      accumulator -= FIXED_TIMESTEP;
     }
 #ifdef PERFORMANCE
     uint64_t endUpdate = SDL_GetPerformanceCounter();
-    totalUpdateTicks += (endUpdate - startUpdate);
+    PERFORMANCE_totalUpdateTicks += (endUpdate - startUpdate);
     uint64_t startRender = SDL_GetPerformanceCounter();
 #endif
     render(elapsedTime); // loads renderServer if needed
-    // Get::Renderer().render(elapsedTime);
+                         // Get::Renderer().render(elapsedTime);
     renderServer_->render(elapsedTime);
     // RenderServer::Get().render(elapsedTime);
 #ifdef DEBUG_WINDOW
@@ -88,28 +78,26 @@ void Engine::run() {
 
 #ifdef PERFORMANCE 
     uint64_t endRender = SDL_GetPerformanceCounter();
-    totalRenderTicks += (endRender - startRender);
-    frameCount++;
-    fpsTimer += rawFrameTime;
-    if (fpsTimer >= 1.0) {
-      double avgFrameTimeMs = (fpsTimer / frameCount) * 1000.0;
-      double currentFps = static_cast<double>(frameCount) / fpsTimer;
-
-      double avgUpdateMs = (static_cast<double>(totalUpdateTicks) / frameCount / frequency) * 1000.0;
-      double avgRenderMs = (static_cast<double>(totalRenderTicks) / frameCount / frequency) * 1000.0;
-
-      term::print_engine_perf(currentFps, avgFrameTimeMs, avgUpdateMs, avgRenderMs);
-
-      // Reset intervals
-      frameCount = 0;
-      fpsTimer = 0.0;
-      totalUpdateTicks = 0;
-      totalRenderTicks = 0;
+    PERFORMANCE_totalRenderTicks += (endRender - startRender);
+    PERFORMANCE_frameCount++;
+    PERFORMANCE_fpsTimer += PERFORMANCE_rawFrameTime;
+    if (PERFORMANCE_fpsTimer >= 1.0) {
+      double avgFrameTimeMs = (PERFORMANCE_fpsTimer / PERFORMANCE_frameCount) * 1000.0;
+      double currentFps = static_cast<double>(PERFORMANCE_frameCount) / PERFORMANCE_fpsTimer;
+      double avgUpdateMs = (static_cast<double>(PERFORMANCE_totalUpdateTicks) / PERFORMANCE_frameCount / frequency) * 1000.0;
+      double avgRenderMs = (static_cast<double>(PERFORMANCE_totalRenderTicks) / PERFORMANCE_frameCount / frequency) * 1000.0;
+      print_engine_perf(currentFps, avgFrameTimeMs, avgUpdateMs, avgRenderMs);
+      // reset intervals
+      PERFORMANCE_frameCount = 0;
+      PERFORMANCE_fpsTimer = 0.0;
+      PERFORMANCE_totalUpdateTicks = 0;
+      PERFORMANCE_totalRenderTicks = 0;
     }
 #endif
   }
 }
 void Engine::addNode(Node* node) {
+  // std::print(" From Engine: {:#x}\n", reinterpret_cast<std::uintptr_t>(node));
   if (node != nullptr) {
     sceneNodes_.push_back(node);
   }
@@ -166,3 +154,27 @@ void Engine::handleEvents() {
   }
 }
 
+
+#ifdef PERFORMANCE 
+
+inline void Engine::print_engine_perf(double fps, double total_ms, double update_ms, double render_ms) {
+  std::print("{}", term::mv::CURSOR_HOME);
+  auto performance_color = (total_ms > 16.67) ? term::fg::B_RED : term::fg::B_GREEN;
+  double budget_percent = (total_ms / 16.67) * 100.0;
+  std::print("\033[2K{}{}{}┌────────────────────────────────────────┐\n", term::format::BOLD, term::fg::B_CYAN, term::format::RESET);
+  std::print("\033[2K{}{}│ {}{}STATS:{}│\n", term::format::BOLD, term::fg::B_CYAN, term::fg::B_YELLOW, term::format::BOLD, " ");
+  std::print("\033[2K{}{}├────────────────────────────────────────┤\n{}", term::format::BOLD, term::fg::B_CYAN, term::format::RESET);
+  std::print("\033[2K{}{}│ {}Frame Rate:  {}{:>6.2f} FPS{} │\n", 
+      term::format::BOLD, term::fg::B_CYAN, term::fg::WHITE, performance_color, fps, term::format::RESET);
+  std::print("\033[2K{}{}│ {}Frame Budget: {}{:>6.2f} ms {}({:>5.1f}%%){} │\n", 
+      term::format::BOLD, term::fg::B_CYAN, term::fg::WHITE, performance_color, total_ms, term::format::DIM, budget_percent, term::format::RESET);
+  std::print("\033[2K{}{}├────────────────────────────────────────┤\n{}", term::format::BOLD, term::fg::B_CYAN, term::format::RESET);
+  std::print("\033[2K{}{}│ {} -> {}Core Update: {:>6.10f} ms{} │\n", 
+      term::format::BOLD, term::fg::B_CYAN, term::format::RESET, term::fg::B_BLUE, update_ms, term::format::RESET);
+  std::print("\033[2K{}{}│ {} -> {}GPU Render:  {:>6.10f} ms{} │\n", 
+      term::format::BOLD, term::fg::B_CYAN, term::format::RESET, term::fg::B_MAGENTA, render_ms, term::format::RESET);
+  std::print("\033[2K{}{}└────────────────────────────────────────┘\n{}", term::format::BOLD, term::fg::B_CYAN, term::format::RESET);
+  fflush(stdout);
+}
+
+#endif

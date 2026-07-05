@@ -1,4 +1,3 @@
-#include "ansi_control.hpp"
 #if defined(_WIN32)
 // #define NOMINMAX
 // #define WIN32_LEAN_AND_MEAN
@@ -22,20 +21,11 @@
 // #include "GL_HELP.hpp"
 
 #include "RenderServer/RenderServer.hpp"
+#include "wEngApplication.hpp"
 #include "Engine/Engine.hpp"
 #include "nodeSystem/Node.hpp"
 #include "nodeSystem/SpacialNode.hpp"
 
-
-class ILogger {//: public ILogger {
-public:
-    void log(const std::string& message) {
-        std::cout << "[LOG] " << message << std::endl;
-    }
-    void error(const std::string& message) {
-        std::cerr << "[ERROR] " << message << std::endl;
-    }
-};
 
 
 #include <filesystem>
@@ -73,26 +63,28 @@ int main(int argc, char* argv[]) {
 
   SDL_SetMainReady(); 
   try {
-    ILogger logger;
-    RenderServer renderServer(&logger);
-    if (!renderServer.init("OpenGL Revision", 1280, 720)) {
-      std::cerr << "Failed to initialize render server" << std::endl;
-      return 1;
-    }
+    // RenderServer renderServer(&logger);
+    // if (!renderServer.init("OpenGL Revision", 1280, 720)) {
+    //   std::cerr << "Failed to initialize render server" << std::endl;
+    //   return 1;
+    // }
+    //
+    // Engine engine(&renderServer);
+    wEngApplication wApp;
 
-    Engine engine(&renderServer);
-
-    auto rootNode = new SpacialNode(&renderServer);
-    auto childNode = new SpacialNode(&renderServer);
+    auto rootNode = new SpacialNode(wApp.renderServer_.get());
+    auto childNode = new SpacialNode(wApp.renderServer_.get());
 
     rootNode->addChild(childNode);
     childNode->setPosition(glm::vec3(10.0f, 5.0f, 0.0f));
-    childNode->setTextureHandle(0);
-    engine.addNode(rootNode);
+    // childNode->setTextureHandle(0);
+    std::print(" From Main: {:#x}\n", reinterpret_cast<std::uintptr_t>(rootNode));
+    wApp.engine_->addNode(rootNode);
 
     rootNode->printInfo(true);
 
-    engine.run();
+    wApp.engine_->init();
+    wApp.engine_->run();
 
   } catch (const std::exception& e) {
     std::cerr << "Fatal error: " << e.what() << std::endl;
