@@ -6,4 +6,4 @@
 // #define CAMERA_DEBUG
 // #define RENDERSERVER_DEBUG_HEAVY
 // #define TEXTUREMGR_DEBUG 
-// #define PERFORMANCE
+#define PERFORMANCE

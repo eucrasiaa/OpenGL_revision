@@ -6,7 +6,6 @@
 #include <vector>
 #include <memory>
 
-#define PERFORMANCE
 #ifdef PERFORMANCE 
 #include <print>
 #include "ansi_min.hpp"
@@ -46,15 +45,17 @@ class Engine : public IEngine{
     // Engine(const Engine&) = delete;
     // Engine& operator=(const Engine&) = delete;
 #ifdef PERFORMANCE 
-    inline void print_engine_perf(double fps, double total_ms, double update_ms, double render_ms);
+    inline void print_engine_perf(double fps, double total_ms, double update_ms, double recalc_ms,double render_ms, double events_ms);
 #endif 
 
   public:
 
-    explicit Engine(IRenderServer* renderServer, ILogger* logger) 
+    explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ILogger* logger) 
       : renderServer_(renderServer),
+      inputManager_(inputManager),
         logger_(logger){
         if (!renderServer_) { throw std::runtime_error("RenderServer cannot be null"); }
+        if (!inputManager_) { throw std::runtime_error("MnputManager cannot be null"); }
         if (!logger_) { throw std::runtime_error("Logger cannot be null"); }
       }
     // explicit Engine(IRenderServer* renderServer) 

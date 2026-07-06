@@ -2,8 +2,10 @@
 #include <memory>
 #include <stdexcept>
 #include "Engine/Engine.hpp"
+#include "Managers/InputManager/CoreInputManager.hpp"
 #include "RenderServer/RenderServer.hpp"
 #include "Logger/LoggerBasic.hpp"
+#include "RenderServer/WindowServer/OpenGLWindowServer.hpp"
 
 struct  wEngApplication {
   // destroyed bottom to top
@@ -11,17 +13,20 @@ struct  wEngApplication {
     
     //allocate, then share
     logger_ = std::make_unique<LoggerBasic>();
-
-    renderServer_ = std::make_unique<RenderServer>();
+    inputManager_ = std::make_unique<CoreInputManager>(logger_.get());
+    windowServer_ = std::make_unique<OpenGLWindowServer>(inputManager_.get(), logger_.get());
+    renderServer_ = std::make_unique<RenderServer>(windowServer_.get(), logger_.get());
     
     if (!renderServer_->init("OpenGL Revision", 1280, 720)) {
       logger_->log(LogLevel::Critical, "Failed To Initialize Server!!");
       std::cerr<<"fallback failurue"<<std::endl;
     }
-    engine_ = std::make_unique<Engine>(renderServer_.get(),logger_.get());
+    engine_ = std::make_unique<Engine>(renderServer_.get(), inputManager_.get(),logger_.get());
   }
 
   std::unique_ptr<ILogger> logger_;
+  std::unique_ptr<IInputManager>  inputManager_;
+  std::unique_ptr<OpenGLWindowServer>  windowServer_;
   std::unique_ptr<IRenderServer> renderServer_;
   std::unique_ptr<IEngine> engine_;
 

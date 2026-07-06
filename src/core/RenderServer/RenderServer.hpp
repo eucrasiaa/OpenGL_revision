@@ -16,12 +16,18 @@
 
 class ILogger;
 class RenderServer : public IRenderServer { 
-  private:
+  protected:
     // optinal deptendency
     ILogger* logger_ = nullptr;
   public:
-    explicit RenderServer(ILogger* logger = nullptr) 
-        : logger_(logger) {}
+    explicit RenderServer(IWindowServer* windowServer, ILogger* logger = nullptr) 
+      : IRenderServer(windowServer), // Call base constructor here
+      logger_(logger) {
+
+        if (!windowServer_) { throw std::runtime_error("RenderServer's windowServer cannot be null"); }
+        if (!logger_) { throw std::runtime_error("RenderServer's windowServer cannot be null"); }
+
+      }
     ~RenderServer() { shutdown(); }
     // RenderServer(const RenderServer&) = delete;
     // RenderServer& operator=(const RenderServer&) = delete;
@@ -32,6 +38,8 @@ class RenderServer : public IRenderServer {
     void shutdown() override;
     void render(double dt) override;
 
+
+    virtual bool pollServer() override;
 };
 
 

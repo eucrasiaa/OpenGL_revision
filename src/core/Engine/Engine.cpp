@@ -7,6 +7,10 @@
 
 #include "Logger/ILogger.hpp"
 #include "Logger/LoggerBasic.hpp"
+
+
+#include "InputManager/IInputManager.hpp"
+
 // #include <glad/glad.h>
 // #include "RenderServer.hpp"
 // bool Engine::init(const char* title, int width, int height) {
@@ -20,14 +24,16 @@ void Engine::update(double dt) {
     node->update(dt);
   }
 }
-#define PERFORMANCE
+// #define PERFORMANCE
 
 void Engine::run() {
 #ifdef PERFORMANCE
   double PERFORMANCE_fpsTimer = 0.0;
   int PERFORMANCE_frameCount = 0;
   uint64_t PERFORMANCE_totalUpdateTicks = 0;
+  uint64_t PERFORMANCE_totalRecalcTicks = 0;
   uint64_t PERFORMANCE_totalRenderTicks = 0;
+  uint64_t PERFORMANCE_totalEventsTicks = 0;
 #endif
 
   const double FIXED_TIMESTEP = 1.0 / 60.0; 
@@ -55,10 +61,22 @@ void Engine::run() {
     elapsedTime += (frameTime * timeScale_);
     accumulator += (frameTime * timeScale_);
 
+
+#ifdef PERFORMANCE
+    uint64_t startEvents = SDL_GetPerformanceCounter();
+#endif
     handleEvents();
+
+#ifdef PERFORMANCE
+    uint64_t endEvents = SDL_GetPerformanceCounter();
+    PERFORMANCE_totalEventsTicks += (endEvents - startEvents);
+#endif 
+
 #ifdef PERFORMANCE
     uint64_t startUpdate = SDL_GetPerformanceCounter();
 #endif
+
+
     while (accumulator >= FIXED_TIMESTEP) {
       update(FIXED_TIMESTEP);
       accumulator -= FIXED_TIMESTEP;
@@ -66,10 +84,15 @@ void Engine::run() {
 #ifdef PERFORMANCE
     uint64_t endUpdate = SDL_GetPerformanceCounter();
     PERFORMANCE_totalUpdateTicks += (endUpdate - startUpdate);
-    uint64_t startRender = SDL_GetPerformanceCounter();
+    uint64_t startRecalc = SDL_GetPerformanceCounter();
 #endif
     render(elapsedTime); // loads renderServer if needed
                          // Get::Renderer().render(elapsedTime);
+#ifdef PERFORMANCE
+    uint64_t endRecalc= SDL_GetPerformanceCounter();
+    PERFORMANCE_totalRecalcTicks += (endRecalc - startRecalc);
+    uint64_t startRender = SDL_GetPerformanceCounter();
+#endif 
     renderServer_->render(elapsedTime);
     // RenderServer::Get().render(elapsedTime);
 #ifdef DEBUG_WINDOW
@@ -85,15 +108,23 @@ void Engine::run() {
       double avgFrameTimeMs = (PERFORMANCE_fpsTimer / PERFORMANCE_frameCount) * 1000.0;
       double currentFps = static_cast<double>(PERFORMANCE_frameCount) / PERFORMANCE_fpsTimer;
       double avgUpdateMs = (static_cast<double>(PERFORMANCE_totalUpdateTicks) / PERFORMANCE_frameCount / frequency) * 1000.0;
+      double avgRecalcMs = (static_cast<double>(PERFORMANCE_totalRecalcTicks) / PERFORMANCE_frameCount / frequency) * 1000.0;
       double avgRenderMs = (static_cast<double>(PERFORMANCE_totalRenderTicks) / PERFORMANCE_frameCount / frequency) * 1000.0;
-      print_engine_perf(currentFps, avgFrameTimeMs, avgUpdateMs, avgRenderMs);
+      double avgEventsMs = (static_cast<double>(PERFORMANCE_totalEventsTicks) / PERFORMANCE_frameCount / frequency) * 1000.0;
+      print_engine_perf(currentFps, avgFrameTimeMs, avgUpdateMs,avgRecalcMs, avgRenderMs, avgEventsMs);
       // reset intervals
       PERFORMANCE_frameCount = 0;
       PERFORMANCE_fpsTimer = 0.0;
       PERFORMANCE_totalUpdateTicks = 0;
+      PERFORMANCE_totalRecalcTicks = 0;
       PERFORMANCE_totalRenderTicks = 0;
+      PERFORMANCE_totalEventsTicks =0;
     }
 #endif
+  
+    // Write back input status 
+    inputManager_->updateState();
+
   }
 }
 void Engine::addNode(Node* node) {
@@ -121,28 +152,28 @@ void Engine::render(double ft) {
 }
 
 void Engine::handleEvents() {
-  SDL_Event event;
-  while (SDL_PollEvent(&event) != 0) {
-    if (event.type == SDL_QUIT) {
-      isRunning_ = false;
-      shutdown();
-    }
-    else if (event.type == SDL_KEYDOWN) {
-      switch (event.key.keysym.sym) {
-        case SDLK_LEFT:
-          break;
-        case SDLK_RIGHT:
-          break;
-        case SDLK_SPACE:
-          // SDL_SetRelativeMouseMode(inputState.ToggleMouse? SDL_TRUE : SDL_FALSE);
-          break;
-        case SDLK_COMMA:
-          break;
-        case SDLK_PERIOD:
-          break;
-
-      }
-    }
+ // CALL THE WINDOW POLL -ER 
+ // false return = exit
+ if (!renderServer_->pollServer()){
+   isRunning_=false;
+ }
+    //
+    // else if (event.type == SDL_KEYDOWN) {
+    //   switch (event.key.keysym.sym) {
+    //     case SDLK_LEFT:
+    //       break;
+    //     case SDLK_RIGHT:
+    //       break;
+    //     case SDLK_SPACE:
+    //       // SDL_SetRelativeMouseMode(inputState.ToggleMouse? SDL_TRUE : SDL_FALSE);
+    //       break;
+    //     case SDLK_COMMA:
+    //       break;
+    //     case SDLK_PERIOD:
+    //       break;
+    //
+    //   }
+    // }
     // if(event.type == SDL_MOUSEMOTION) {
     // yaw   += event.motion.xrel * mouseSensitivity;
     // pitch -= event.motion.yrel * mouseSensitivity; 
@@ -151,14 +182,15 @@ void Engine::handleEvents() {
     // if (pitch < -maxPitch) pitch = -maxPitch;
     // }
 
-  }
+  
 }
 
 
 #ifdef PERFORMANCE 
 
-inline void Engine::print_engine_perf(double fps, double total_ms, double update_ms, double render_ms) {
-  std::print("{}", term::mv::CURSOR_HOME);
+inline void Engine::print_engine_perf(double fps, double total_ms, double update_ms, double recalc_ms, double render_ms, double events_ms){
+  // std::print("{}", term::mv::CURSOR_HOME);
+  term::move_up(11,true);
   auto performance_color = (total_ms > 16.67) ? term::fg::B_RED : term::fg::B_GREEN;
   double budget_percent = (total_ms / 16.67) * 100.0;
   std::print("\033[2K{}{}{}┌────────────────────────────────────────┐\n", term::format::BOLD, term::fg::B_CYAN, term::format::RESET);
@@ -173,6 +205,11 @@ inline void Engine::print_engine_perf(double fps, double total_ms, double update
       term::format::BOLD, term::fg::B_CYAN, term::format::RESET, term::fg::B_BLUE, update_ms, term::format::RESET);
   std::print("\033[2K{}{}│ {} -> {}GPU Render:  {:>6.10f} ms{} │\n", 
       term::format::BOLD, term::fg::B_CYAN, term::format::RESET, term::fg::B_MAGENTA, render_ms, term::format::RESET);
+
+  std::print("\033[2K{}{}│ {} -> {}Calc Update: {:>6.10f} ms{} │\n", 
+      term::format::BOLD, term::fg::B_CYAN, term::format::RESET, term::fg::B_GREEN, recalc_ms, term::format::RESET);
+  std::print("\033[2K{}{}│ {} -> {}Event Update:{:>6.10f} ms{} │\n", 
+      term::format::BOLD, term::fg::B_CYAN, term::format::RESET, term::fg::B_GREEN, events_ms, term::format::RESET);
   std::print("\033[2K{}{}└────────────────────────────────────────┘\n{}", term::format::BOLD, term::fg::B_CYAN, term::format::RESET);
   fflush(stdout);
 }

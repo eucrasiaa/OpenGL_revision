@@ -24,6 +24,8 @@ set(PROJECT_SOURCES
     src/core/Engine/Engine.cpp
     src/core/RenderServer/RenderServer.cpp
     src/nodeSystem/Node.cpp
+    src/core/Managers/InputManager/CoreInputManager.cpp
+    src/core/RenderServer/WindowServe/OpenGLWindowServer.cpp
 )
 
 file(GLOB_RECURSE PROJECT_SOURCES
@@ -46,6 +48,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     src
     src/core
     src/nodeSystem
+    src/core/Managers
     ${CMAKE_CURRENT_SOURCE_DIR} #for the rest 
 )
 target_precompile_headers(${PROJECT_NAME} PRIVATE 
