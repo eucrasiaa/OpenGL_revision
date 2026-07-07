@@ -7,9 +7,9 @@
 
 #include "Logger/ILogger.hpp"
 #include "Logger/LoggerBasic.hpp"
-
-
 #include "InputManager/IInputManager.hpp"
+
+
 
 // #include <glad/glad.h>
 // #include "RenderServer.hpp"
@@ -43,6 +43,8 @@ void Engine::run() {
   double alpha_interp =  0.0; //accumulator / FIXED_TIMESTEP; 
   uint64_t frequency = SDL_GetPerformanceFrequency();
   const double INV_FREQUENCY = 1.0 / static_cast<double>(SDL_GetPerformanceFrequency());
+
+// thread
 
   uint64_t currentTicks = SDL_GetPerformanceCounter(); // keep this right before while!
   while (isRunning_) {
@@ -93,7 +95,7 @@ void Engine::run() {
     PERFORMANCE_totalRecalcTicks += (endRecalc - startRecalc);
     uint64_t startRender = SDL_GetPerformanceCounter();
 #endif 
-    renderServer_->render(elapsedTime);
+    renderServer_->render(alpha_interp, elapsedTime);
     // RenderServer::Get().render(elapsedTime);
 #ifdef DEBUG_WINDOW
     RenderServer::Get().DrawDebug();

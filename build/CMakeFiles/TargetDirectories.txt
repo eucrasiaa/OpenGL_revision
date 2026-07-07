@@ -1,0 +1,5 @@
+C:/msys64/home/willi/Projects/C_Stuffs/CPP_Stuffs/OGL_revision/build/CMakeFiles/OpenGL_Revision.dir
+C:/msys64/home/willi/Projects/C_Stuffs/CPP_Stuffs/OGL_revision/build/CMakeFiles/glad.dir
+C:/msys64/home/willi/Projects/C_Stuffs/CPP_Stuffs/OGL_revision/build/CMakeFiles/run.dir
+C:/msys64/home/willi/Projects/C_Stuffs/CPP_Stuffs/OGL_revision/build/CMakeFiles/edit_cache.dir
+C:/msys64/home/willi/Projects/C_Stuffs/CPP_Stuffs/OGL_revision/build/CMakeFiles/rebuild_cache.dir

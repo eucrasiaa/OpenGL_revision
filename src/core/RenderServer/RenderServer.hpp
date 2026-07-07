@@ -15,16 +15,30 @@
 // #include <memory>
 
 class ILogger;
+class IInterpolateServer;
 class RenderServer : public IRenderServer { 
   protected:
+
+    IInterpolateServer* interpolateServer_ = nullptr;
+
     // optinal deptendency
     ILogger* logger_ = nullptr;
+    // built on scene change? 
+    std::vector<RenderEntity> renderEntities_;
+
+
+
+
+   void resolveWorldTransform(EntityID id, double alpha);
+
   public:
-    explicit RenderServer(IWindowServer* windowServer, ILogger* logger = nullptr) 
+    explicit RenderServer(IWindowServer* windowServer, IInterpolateServer *interpolateServer, ILogger* logger = nullptr) 
       : IRenderServer(windowServer), // Call base constructor here
+      interpolateServer_(interpolateServer),
       logger_(logger) {
 
         if (!windowServer_) { throw std::runtime_error("RenderServer's windowServer cannot be null"); }
+        if (!interpolateServer_) { throw std::runtime_error("renderserver's interpolation server cant be null!!!!");}
         if (!logger_) { throw std::runtime_error("RenderServer's windowServer cannot be null"); }
 
       }
@@ -34,12 +48,12 @@ class RenderServer : public IRenderServer {
     // RenderServer(RenderServer&&) = delete;
     // RenderServer& operator=(RenderServer&&) = delete;
 
-    bool init(const char* title, int width, int height) override;
-    void shutdown() override;
-    void render(double dt) override;
-
-
+    virtual bool init(const char* title, int width, int height) override;
+    virtual void shutdown() override;
+    virtual void render(double alpha, double elapsedTime) override;
     virtual bool pollServer() override;
+
+    virtual void resolveAllTransforms(double alpha) override;
 };
 
 

@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/ext/matrix_float4x4.hpp>
-
+#include "MeshManager/MeshTypes.hpp"
 enum class RenderLayer{
   RIL_OPAQUE,
   RIL_TRANSPARENT,
@@ -11,17 +11,12 @@ enum class RenderLayer{
   RIL_POSTPROCESS_SCREEN,
   RIL_CAMERA
 };
-typedef unsigned long EntityID;
-struct MeshHandle {
-    uint32_t id; // opaque handle into MeshManager
-    // finds VAO, VBO, indexCount, vertex format
-};
 
-struct Material {
-    uint32_t pipelineID;  // shader program
-    uint64_t textureFlags; // bindless handles or traditional texture IDs
-    // Eventually: uniform buffer offset for material properties
-};
+// struct EntityID{
+//   uint64_t id;
+// };
+
+typedef uint64_t EntityID;
 
 struct DrawCommand {
     EntityID entityID; // for interpolation lookup

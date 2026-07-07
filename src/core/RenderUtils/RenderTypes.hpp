@@ -7,6 +7,14 @@
 #include <string>
 #include <iostream>
 
+
+struct RenderEntity {
+  EntityID id;
+  EntityID parentID;  // 0 = root
+  glm::mat4 resolvedWorldMatrix; // filled during resolve phase
+  bool resolved = false;
+};
+
 // struct PipelineConfig {
 //   std::string name;
 //   std::string vertexPath;

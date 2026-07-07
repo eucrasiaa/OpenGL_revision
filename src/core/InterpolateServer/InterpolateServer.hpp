@@ -1,38 +1,17 @@
-#pragma once 
-#include "RenderUtils/DrawCommand.hpp"
-#include <glm/ext/quaternion_float.hpp>
-#include <glm/ext/vector_float3.hpp>
-class InterpolateServer {
-private:
-    struct TransformSnapshot {
-        glm::vec3 position;
-        glm::quat rotation;
-        glm::vec3 scale;
-        uint64_t tick;
-    };
-    
-    // [previous, current]
-    struct InterpolationBuffer {
-        TransformSnapshot snapshots[2];
-        int writeIndex = 0;
-    };
-    
-    std::unordered_map<EntityID, InterpolationBuffer> buffers_;
-    uint64_t currentTick_ = 0;
-    
-public:
-    // call post update loop
-    void advanceTick();
-    
-    // pre-render , post compute
-    void captureTransform(EntityID id, 
-                          const glm::vec3& pos, 
-                          const glm::quat& rot, 
-                          const glm::vec3& scale);
-    
-    // renderServer -> calls during render
-    glm::mat4 getRenderTransform(EntityID id, double alpha) const;
-    
-    // things without interp (ui stuff)
-    void setStaticTransform(EntityID id, const glm::mat4& transform);
+#pragma once
+
+#include "InterpolateServer/IInterpolateServer.hpp"
+#include "InterpolateTypes.hpp"
+class InterpolateServer : public IInterpolateServer {
+  private:
+    std::vector<Buffer> buffers_;
+    glm::mat4 makeLocalMatrix(const glm::vec3& pos, const glm::quat& rot, const glm::vec3& scl) const;
+
+    glm::mat4 makeLocalMatrix(const LocalSnapshot& s) const;
+
+  public:
+    virtual void capture(EntityID id, const glm::vec3& localPos, const glm::quat& localRot, const glm::vec3& localScale);
+    virtual void advanceTick();
+    // to find INTERPOLATED LOCAL MATRIX
+    virtual glm::mat4 getInterpolatedLocalMatrix(EntityID id, double alpha) const;
 };

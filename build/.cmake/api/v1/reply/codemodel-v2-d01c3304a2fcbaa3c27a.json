@@ -1,0 +1,150 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "OpenGL::GL::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-OpenGL__GL-Debug-bae7296ff6a01569f93a.json",
+					"name" : "OpenGL::GL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "OpenGL::GLU::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-OpenGL__GLU-Debug-fd5f609f147baa84a56f.json",
+					"name" : "OpenGL::GLU",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SDL2::SDL2::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SDL2__SDL2-Debug-b05b65146f73b33c58fb.json",
+					"name" : "SDL2::SDL2",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SDL2::SDL2-static::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SDL2__SDL2-static-Debug-dfee739c116ebfe2e892.json",
+					"name" : "SDL2::SDL2-static",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SDL2::SDL2main::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SDL2__SDL2main-Debug-05c4287664e17482ab3a.json",
+					"name" : "SDL2::SDL2main",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SDL2::SDL2test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SDL2__SDL2test-Debug-63379c5accf1d9c67962.json",
+					"name" : "SDL2::SDL2test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Threads::Threads::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Threads__Threads-Debug-ef4d725da8ad1571320a.json",
+					"name" : "Threads::Threads",
+					"projectIndex" : 0
+				}
+			],
+			"directories" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6
+					],
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f040eec181a89de70dbe.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "OpenGL_Revision",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "OpenGL_Revision::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-OpenGL_Revision-Debug-47ad74498111dd092894.json",
+					"name" : "OpenGL_Revision",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "glad::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-glad-Debug-d18480c4028dc33e1fe9.json",
+					"name" : "glad",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "run::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-run-Debug-32dc9683fd7ab1abc04b.json",
+					"name" : "run",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/msys64/home/willi/Projects/C_Stuffs/CPP_Stuffs/OGL_revision/build",
+		"source" : "C:/msys64/home/willi/Projects/C_Stuffs/CPP_Stuffs/OGL_revision"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	}
+}

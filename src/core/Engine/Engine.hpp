@@ -15,7 +15,7 @@ class Node;
 class IRenderServer;
 class IInputManager;
 class ILogger;
-
+class ICommandSource;
 class Engine : public IEngine{
   private:
 
@@ -23,6 +23,7 @@ class Engine : public IEngine{
     IRenderServer* renderServer_ = nullptr;
     IInputManager* inputManager_ = nullptr; 
 
+    ICommandSource* commandSrc_ = nullptr; 
     ILogger* logger_ = nullptr; 
     //owned 
     std::vector<Node*> sceneNodes_; // change ptr type maybe 
@@ -50,12 +51,14 @@ class Engine : public IEngine{
 
   public:
 
-    explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ILogger* logger) 
+    explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ICommandSource* cmdSource, ILogger* logger) 
       : renderServer_(renderServer),
       inputManager_(inputManager),
+      commandSrc_(cmdSource),
         logger_(logger){
         if (!renderServer_) { throw std::runtime_error("RenderServer cannot be null"); }
         if (!inputManager_) { throw std::runtime_error("MnputManager cannot be null"); }
+        if (!commandSrc_) { throw std::runtime_error("Command Source cannot be null"); }
         if (!logger_) { throw std::runtime_error("Logger cannot be null"); }
       }
     // explicit Engine(IRenderServer* renderServer) 
