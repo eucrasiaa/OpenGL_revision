@@ -7,7 +7,10 @@ void RenderServer::shutdown(){
 
 
 bool RenderServer::init(const char* title, int width, int height){
-  windowServer_->InitializeWindow(title, width, height, WindowMode::Windowed);
+  // windowServer_->InitializeWindow(title, width, height, WindowMode::Windowed);
+  windowServer_->InitializeWindow( {
+      .title     = "OpenGL windowServer title",
+      });
   return true;
 }
 

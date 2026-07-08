@@ -14,7 +14,7 @@ struct Vec3{
   float x = 0.0f;
   float y = 0.0f;
   float z = 0.0f;
-  constexpr Vec3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {};
+  constexpr Vec3(float x_ = 0.0f, float y_ = 0.0f, float z_ = 0.0f) : x(x_), y(y_), z(z_) {};
 
 
   static const Vec3 ZERO;

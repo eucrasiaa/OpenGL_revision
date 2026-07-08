@@ -3,16 +3,17 @@
 
 #include <glm/ext/quaternion_float.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 class SpacialNode : public Node {
 
   private:
   protected:
+    // for our localTransform_
+    void recalculateLocalTransform();
+
   public:
     using Node::Node;
     // user facing easy
     //  TRUE STATE!!
-
     //  Locical State
     glm::vec3 position_ = glm::vec3(0.0f);
     // psudo exists, changes to this are actually mapped to the quaterion for math sake?
@@ -42,16 +43,16 @@ class SpacialNode : public Node {
 
     // math stuff 
     virtual void checkCalculate(const glm::mat4& parentTransform, bool parentIsDirty) override;
-
+    // for our globalTransform_
     void computeTransforms(const glm::mat4& parentTransform);
 
 
-    // Transform methods
+    // // Transform methods
     void setLocalTransform(const glm::mat4& transform);
 
     void setPosition(const glm::vec3& position);
 
-    void setRotation(const glm::quat& rotation);
+    void setRotationQ(const glm::quat& quaternion);
 
     void setScale(const glm::vec3& scale);
     void markDirty();

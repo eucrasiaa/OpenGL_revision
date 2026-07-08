@@ -40,8 +40,9 @@ class CoreInputManager : public IInputManager {
 
     virtual inline bool isReleased(ActionID action) const;
 
-    virtual inline Vec2 getVector(uint8_t neg_x,uint8_t pos_x,uint8_t neg_y,uint8_t pos_y);
+    virtual inline Vec2 getVector(ActionID neg_x,ActionID pos_x,ActionID neg_y,ActionID pos_y);
 
+    virtual inline float getAxis(ActionID neg_x,ActionID pos_x);
     virtual inline Vec2 getMovementAxis() const;
     // perhaps inline. but im sure compiler would automatically
     virtual void processEvents(const SDL_Event& event);

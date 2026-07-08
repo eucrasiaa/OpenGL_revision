@@ -11,7 +11,7 @@ struct Vec2{
 
   float x = 0.0f;
   float y = 0.0f;
-  constexpr Vec2(float x = 0.0f, float y = 0.0f) : x(x), y(y) {};
+  constexpr Vec2(float x_ = 0.0f, float y_ = 0.0f) : x(x_), y(y_) {};
 
 
   static const Vec2 ZERO;

@@ -12,9 +12,11 @@ class IInputManager{
 
     virtual inline bool isReleased(ActionID action) const=0;
 
-    virtual inline Vec2 getVector(uint8_t neg_x,uint8_t pos_x,uint8_t neg_y,uint8_t pos_y)=0;
+    // virtual inline Vec2 getVector(uint8_t neg_x,uint8_t pos_x,uint8_t neg_y,uint8_t pos_y)=0;
 
+    virtual inline Vec2 getVector(ActionID neg_x,ActionID pos_x,ActionID neg_y,ActionID pos_y)=0;
 
+    virtual inline float getAxis(ActionID neg_x,ActionID pos_x)=0;
     virtual inline Vec2 getMovementAxis() const=0;
     // perhaps inline. but im sure compiler would automatically
     // the thing called w/i while loop!!!

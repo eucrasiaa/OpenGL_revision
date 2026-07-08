@@ -1,16 +1,13 @@
 #pragma once
 #include <string>
-enum class WindowMode {
-  Windowed,
-  BorderlessFullscreen,
-  ExclusiveFullscreen
-};
+#include "WindowServerTypes.hpp"
 class IWindowServer{ 
   public:
 
     //lifecycle
     virtual ~IWindowServer() = default;
-    virtual bool InitializeWindow(const std::string& title, int width, int height, WindowMode mode) = 0;
+    virtual bool InitializeWindow(const WindowConfig& config) = 0;
+    // virtual bool InitializeWindow(const std::string& title, int width, int height, WindowMode mode) = 0;
     // cleanup!
     virtual void ShutdownWindow() = 0;
     // trigger on event quit

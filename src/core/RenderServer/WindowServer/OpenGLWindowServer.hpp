@@ -3,16 +3,18 @@
 #include "IWindowServer.hpp"
 #include <SDL_video.h>
 #include <memory>
+#include <glad/glad.h>
+
 
 class IInputManager;
 class ILogger;
 class OpenGLWindowServer : public IWindowServer{
 
-  private:
 
+  protected:
     IInputManager* inputManager_ = nullptr;  
     ILogger* logger_ = nullptr; 
-    
+
     struct SDLWindowDeleter {
       void operator()(SDL_Window* w) const { if (w) SDL_DestroyWindow(w); }
     };
@@ -24,19 +26,47 @@ class OpenGLWindowServer : public IWindowServer{
 
     int windowWidth_=1280;
     int windowHeight_=720;
+    std::string windowTitle_ = "Placeholder Title";
 
+    
+    void _preInitOpenGLAttribs();
+    void _postInitOpenGLAttribs();
+
+
+    // struct defined by opengl. yea its gross
+    static void APIENTRY _OpenGLDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
+
+    //critical we use so 
+    [[nodiscard]] static constexpr Uint32 MapConfigToSDLFlags(const WindowConfig& config) noexcept {
+      // backend should be locked 
+      Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN; 
+
+      switch (config.mode) {
+        case WindowMode::BorderlessFullscreen: flags |= SDL_WINDOW_FULLSCREEN_DESKTOP; break;
+        case WindowMode::ExclusiveFullscreen:  flags |= SDL_WINDOW_FULLSCREEN; break;
+        case WindowMode::Windowed:             break;
+      }
+
+      if (config.resizable)      flags |= SDL_WINDOW_RESIZABLE;
+      if (config.highDpi)        flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+      if (config.borderless)     flags |= SDL_WINDOW_BORDERLESS;
+      if (config.startMaximized) flags |= SDL_WINDOW_MAXIMIZED;
+
+      return flags;
+    }
   public:
 
 
     explicit OpenGLWindowServer(IInputManager* inputManager, ILogger* logger) 
       : inputManager_(inputManager),
-        logger_(logger){
+      logger_(logger){
         if (!inputManager_) { throw std::runtime_error("MnputManager cannot be null"); }
         if (!logger_) { throw std::runtime_error("Logger cannot be null"); }
       }
     //lifecycle
     // virtual ~OpenGLWindowServer() = default;
-    virtual bool InitializeWindow(const std::string& title, int width, int height, WindowMode mode);
+    // virtual bool InitializeWindow(const std::string& title, int width, int height, WindowMode mode);
+    virtual bool InitializeWindow(const WindowConfig& config);
     // cleanup!
     virtual void ShutdownWindow();
     // trigger on event quit
