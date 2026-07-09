@@ -26,13 +26,18 @@ set(PROJECT_SOURCES
     src/nodeSystem/Node.cpp
     src/core/Managers/InputManager/CoreInputManager.cpp
     src/core/Managers/SceneManager/SceneManager.cpp
+
+    src/core/InterpolateServer/InterpolateServer.cpp
+    src/core/WindowServer/OpenGLWindowServer.cpp
+    src/nodeSystem/SpacialNode.cpp
+    src/nodeSystem/TestingNode.cpp
     # src/core/RenderServer/WindowServe/OpenGLWindowServer.cpp
 )
 
-file(GLOB_RECURSE PROJECT_SOURCES
-    "src/*.cpp"
-)
-
+# file(GLOB_RECURSE PROJECT_SOURCES
+#     "src/*.cpp"
+# )
+#
 file(GLOB_RECURSE PROJECT_HEADERS 
     "include/*.h" "include/*.hpp"
     "src/*.h" "src/*.hpp"

@@ -1,10 +1,10 @@
-#include "RenderServer/WindowServer/OpenGLWindowServer.hpp"
+#include "OpenGLWindowServer.hpp"
 #include "InputManager/IInputManager.hpp"
 #include <SDL2/SDL.h>
 #include <SDL_error.h>
 #include <SDL_video.h>
 #include "Logger/ILogger.hpp"
-#include "RenderServer/WindowServer/IWindowServer.hpp"
+#include "WindowServer/IWindowServer.hpp"
 
 // Templated 
 // bool OpenGLWindowServer::InitializeWindow(const std::string& title, int width, int height, WindowMode mode) {

@@ -11,14 +11,8 @@ class ISceneCommand {
   public: 
     virtual ~ISceneCommand() = default;
     virtual void requestSpawn(Node* parent, std::function<std::unique_ptr<Node>()> factory) = 0;
-    virtual void requestSpawn(Node* parent, std::function<Node*()> rawFactory) =0;
-
-    template<typename T>
-      void requestSpawn(Node* parent, T&& factoryLambda) {
-        requestSpawn(parent, [f = std::forward<T>(factoryLambda)]() mutable {
-            return f(); 
-            });
-      }
+    virtual void requestSpawn(Node* parent, Node* rawNode) =0;
+    
     virtual void requestDestroy(Node* node) = 0;
 
 

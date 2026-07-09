@@ -1,5 +1,5 @@
 #include "RenderServer.hpp"
-#include "RenderServer/WindowServer/IWindowServer.hpp"
+#include "WindowServer/IWindowServer.hpp"
 #include "InterpolateServer/IInterpolateServer.hpp"
 #include "SceneManager/ISceneManager.hpp"
 void RenderServer::shutdown(){

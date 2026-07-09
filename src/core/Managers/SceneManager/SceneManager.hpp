@@ -55,8 +55,10 @@ class SceneManager : public ISceneManager, public ISceneCommand {
 
 
     virtual void requestSpawn(Node* parent, std::function<std::unique_ptr<Node>()> factory) override;
-    virtual void requestSpawn(Node* parent, std::function<Node*()> factory) override;
 
+
+
+    virtual void requestSpawn(Node* parent, Node* rawNode) override;
     virtual void requestDestroy(Node* node) override;
 
 

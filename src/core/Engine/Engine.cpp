@@ -143,6 +143,7 @@ void Engine::addNode(Node* node) {
     std::unique_ptr<Node> toAdd;
     toAdd.reset(node);
     sceneManager_->addNodeTree(std::move(toAdd));
+    sceneManager_->flushCommands();
     // sceneNodes_.push_back(node);
     // TODO pass off to scenemanager
   }

@@ -6,7 +6,7 @@
 #include "Managers/InputManager/InputAid/Input.hpp"
 #include "RenderServer/RenderServer.hpp"
 #include "Logger/LoggerBasic.hpp"
-#include "RenderServer/WindowServer/OpenGLWindowServer.hpp"
+#include "WindowServer/OpenGLWindowServer.hpp"
 #include "commandSource/TermInputService.hpp"
 #include "SceneManager/SceneManager.hpp"
 #include "InterpolateServer/InterpolateServer.hpp"

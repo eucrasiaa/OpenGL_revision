@@ -6,9 +6,5 @@ class spawnerNode : public SpacialNode{
 
   public:
     using SpacialNode::SpacialNode;
-    virtual void _enterTree() override{ 
-      commands_->requestSpawn(this,[](){return new spawnerNode();});
-          return; 
-    }
-
+    virtual void _enterTree() override;
 };

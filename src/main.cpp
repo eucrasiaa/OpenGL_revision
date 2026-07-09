@@ -1,3 +1,4 @@
+#include "TestingNode.hpp"
 #if defined(_WIN32)
 // #define NOMINMAX
 // #define WIN32_LEAN_AND_MEAN
@@ -79,7 +80,10 @@ int main(int argc, char* argv[]) {
     childNode->setPosition(glm::vec3(10.0f, 5.0f, 0.0f));
     // childNode->setTextureHandle(0);
     std::print(" From Main: {:#x}\n", reinterpret_cast<std::uintptr_t>(rootNode));
+    
     wApp.engine_->addNode(rootNode);
+    childNode->addChild(new spawnerNode());
+
 
     rootNode->printInfo(true);
 

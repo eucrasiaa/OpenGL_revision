@@ -42,12 +42,11 @@ void SceneManager::requestSpawn(Node* parent, std::function<std::unique_ptr<Node
   nodesToSpawn_.push_back({parent, factory});
 }
 
-void SceneManager::requestSpawn(Node* parent, std::function<Node*()> rawFactory) {
-    auto wrappedFactory = [rawFactory = std::move(rawFactory)]() -> std::unique_ptr<Node> {
-        Node* rawNode = rawFactory();
-        return std::unique_ptr<Node>(rawNode);
-    };
-    requestSpawn(parent, std::move(wrappedFactory));
+void SceneManager::requestSpawn(Node* parent, Node* rawNode) {
+  auto factory = [rawNode]() { 
+    return std::unique_ptr<Node>(rawNode); 
+  };
+  nodesToSpawn_.push_back({parent, factory});
 }
 
 void SceneManager::requestDestroy(Node* node) {
