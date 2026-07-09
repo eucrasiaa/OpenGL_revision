@@ -20,7 +20,9 @@ void SpacialNode::checkCalculate(const glm::mat4& parentTransform, bool parentIs
 
   // traverse down
   for (auto* child : children_) {
-    child->checkCalculate(globalTransform_, globalChanged);
+    if(child){
+      child->checkCalculate(globalTransform_, globalChanged);
+    }
   }
 
 }
@@ -29,11 +31,12 @@ void SpacialNode::checkCalculate(const glm::mat4& parentTransform, bool parentIs
 void SpacialNode::recalculateLocalTransform(){
   // first convert quaentern ? to 4x4 rot 
   glm::mat4 rotMatrix = glm::mat4_cast(quaternion_);
-
+  localTransform_ = glm::translate(rotMatrix, position_);
+  localTransform_ = glm::scale(localTransform_, scale_);
   // local transform = Translate * Rotate * Scale 
-  localTransform_ = glm::translate(glm::mat4(1.0f), position_) 
-    * rotMatrix 
-    * glm::scale(glm::mat4(1.0f), scale_);
+  // localTransform_ = glm::translate(glm::mat4(1.0f), position_) 
+  //   * rotMatrix 
+  //   * glm::scale(glm::mat4(1.0f), scale_);
   localDirty_=false;
 }
 

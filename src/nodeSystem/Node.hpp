@@ -14,12 +14,13 @@ class Node {
     // ISceneCommand* commands_ = nullptr;
 
     //children and parent
-    std::vector<Node *> children_;
-    Node* parent_=nullptr;
 
 
   public:
 
+    std::vector<Node *> children_;
+    Node* parent_=nullptr;
+    int depthLayer = 0;
     Node();
     virtual ~Node();
     Node(const Node&) = delete;

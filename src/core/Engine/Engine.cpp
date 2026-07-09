@@ -93,6 +93,7 @@ void Engine::run() {
 
     // recalculate matric in prep for interpolate
     // recalculateNodes(elapsedTime);
+    sceneManager_->recalculateTransforms();
 
 
 #ifdef PERFORMANCE

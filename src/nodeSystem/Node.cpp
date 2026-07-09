@@ -18,6 +18,7 @@ Node::~Node() {
 void Node::addChild(Node* child) {
   if (child && child->parent_ != this) {
     child->parent_ = this;
+    child->depthLayer=depthLayer+1;
     // child->commands_=commands_;
     children_.push_back(child);
     // child->_enterTree();

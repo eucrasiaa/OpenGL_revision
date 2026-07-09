@@ -1,5 +1,5 @@
 #include "SceneManager.hpp"
-
+uint64_t SceneManager::counter = 0; 
 void SceneManager::update(double dt){
   for (Node* it : iterList_){
     it->update(dt);
@@ -40,13 +40,14 @@ void SceneManager::addNodeTree(std::unique_ptr<Node> rootNode, Node* parentInSce
 } 
 
 void SceneManager::requestSpawn(Node* parent, std::function<std::unique_ptr<Node>()> factory) {
-  std::cout<<" requested spawn 1"<< std::endl;
+  // std::cout<<" requested spawn 1"<< std::endl;
+  counter+=1;
   nodesToSpawn_.push_back({parent, factory});
 }
 
 void SceneManager::requestSpawn(Node* parent, Node* rawNode) {
 
-  std::cout<<" requested spawn 2"<< std::endl;
+  // std::cout<<" requested spawn 2"<< std::endl;
   auto factory = [rawNode]() { 
     return std::unique_ptr<Node>(rawNode); 
   };
@@ -92,9 +93,15 @@ void SceneManager::flushCommands() {
   //     auto bullet = std::make_unique<BulletNode>();
   //     return bullet;
   // });
+  
 
+  // if nodes spawn nodes ... fix
+  // so if a node spawns 100000 items it doesnt lock up and properlt spaces?
+  auto currentSpawns = std::move(nodesToSpawn_);
+  nodesToSpawn_.clear();
   // THEN do spawns
-  for (auto& action : nodesToSpawn_) {
+  // for (auto& action : nodesToSpawn_) {
+  for (auto& action : currentSpawns) {
     // run the lambda?
     std::unique_ptr<Node> newNode = action.factory();
     Node* rawPtr = newNode.get();
@@ -107,10 +114,11 @@ void SceneManager::flushCommands() {
     }
     //list 1
     iterList_.push_back(rawPtr);
-    // handoff ownership
+    // split off to 
+    rawPtr->_enterTree();
     masterList_.push_back(std::move(newNode));
   }
-  nodesToSpawn_.clear();
+  // nodesToSpawn_.clear();
 
 
   for (auto& branch : pendingBranches_) {

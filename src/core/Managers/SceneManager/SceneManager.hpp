@@ -33,6 +33,8 @@ class SceneManager : public ISceneManager, public ISceneCommand {
 
     void registerBranchElements(Node* node);
   public:
+
+    static uint64_t counter;
     virtual void shutdown() override;
     // for now, placeholder basically 
     virtual void addNodeTree(std::unique_ptr<Node> rootNode, Node* parentInScene = nullptr) override;

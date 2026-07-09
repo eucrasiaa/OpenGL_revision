@@ -40,6 +40,7 @@ struct  wEngApplication {
     // engine_ = std::make_unique<Engine>(renderServer_.get(), inputManager_.get(), commandSource_.get(), logger_.get());
   }
 
+    
   std::unique_ptr<ILogger> logger_;
   // std::unique_ptr<ICommandSource> commandSource_;
   std::unique_ptr<IInputManager>  inputManager_;

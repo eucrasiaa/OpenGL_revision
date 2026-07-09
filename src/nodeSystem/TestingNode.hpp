@@ -8,4 +8,6 @@ class spawnerNode : public SpacialNode{
     using SpacialNode::SpacialNode;
     virtual void _enterTree() override;
     virtual void printInfo(bool recurse, int indent) override;
+virtual void update(double dt) override;
+
 };

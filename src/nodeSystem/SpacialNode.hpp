@@ -12,6 +12,7 @@ class SpacialNode : public Node {
     void recalculateLocalTransform();
 
   public:
+   
     using Node::Node;
     // user facing easy
     //  TRUE STATE!!
