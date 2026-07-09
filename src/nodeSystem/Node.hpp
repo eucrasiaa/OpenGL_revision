@@ -11,7 +11,7 @@ class Node {
   private:
   protected:
     // injected
-    ISceneCommand* commands_ = nullptr;
+    // ISceneCommand* commands_ = nullptr;
 
     //children and parent
     std::vector<Node *> children_;
@@ -40,8 +40,9 @@ class Node {
     
     //psudo protected. no reason to touch
     // ran on instance 
-    virtual void _init(ISceneCommand* commands) {
-        commands_ = commands;
+    virtual void _init(){
+      // ISceneCommand* commands) {
+      //   commands_ = commands;
     } 
     // called when attached as child 
     // TODO tbd

@@ -7,4 +7,5 @@ class spawnerNode : public SpacialNode{
   public:
     using SpacialNode::SpacialNode;
     virtual void _enterTree() override;
+    virtual void printInfo(bool recurse, int indent) override;
 };

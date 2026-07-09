@@ -77,12 +77,17 @@ void Engine::run() {
     while (accumulator >= FIXED_TIMESTEP) {
       // runGameLogic(FIXED_TIMESTEP);
       sceneManager_->update(FIXED_TIMESTEP);
+      sceneManager_->runEngineLogic(FIXED_TIMESTEP);
       // runEngineLogic(FIXED_TIMESTEP);
       accumulator -= FIXED_TIMESTEP;
     }
 #ifdef PERFORMANCE
     uint64_t endUpdate = SDL_GetPerformanceCounter();
     PERFORMANCE_totalUpdateTicks += (endUpdate - startUpdate);
+#endif
+    sceneManager_->flushCommands();
+
+#ifdef PERFORMANCE
     uint64_t startRecalc = SDL_GetPerformanceCounter();
 #endif
 
@@ -143,7 +148,6 @@ void Engine::addNode(Node* node) {
     std::unique_ptr<Node> toAdd;
     toAdd.reset(node);
     sceneManager_->addNodeTree(std::move(toAdd));
-    sceneManager_->flushCommands();
     // sceneNodes_.push_back(node);
     // TODO pass off to scenemanager
   }

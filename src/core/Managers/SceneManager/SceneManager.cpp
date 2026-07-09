@@ -22,8 +22,9 @@ void SceneManager::recalculateTransforms(){
 
 void SceneManager::registerBranchElements(Node* node) {
   if (!node) return;
-  node->_init(this); 
+  node->_init(); 
   iterList_.push_back(node);
+  node->_enterTree();
 
 
   for (Node* child : node->getChildren()) {
@@ -39,10 +40,13 @@ void SceneManager::addNodeTree(std::unique_ptr<Node> rootNode, Node* parentInSce
 } 
 
 void SceneManager::requestSpawn(Node* parent, std::function<std::unique_ptr<Node>()> factory) {
+  std::cout<<" requested spawn 1"<< std::endl;
   nodesToSpawn_.push_back({parent, factory});
 }
 
 void SceneManager::requestSpawn(Node* parent, Node* rawNode) {
+
+  std::cout<<" requested spawn 2"<< std::endl;
   auto factory = [rawNode]() { 
     return std::unique_ptr<Node>(rawNode); 
   };
@@ -95,7 +99,7 @@ void SceneManager::flushCommands() {
     std::unique_ptr<Node> newNode = action.factory();
     Node* rawPtr = newNode.get();
     // hand off command!! 
-    rawPtr->_init(this); 
+    rawPtr->_init(); 
 
     //list 2
     if (action.parent) {
@@ -126,6 +130,7 @@ void SceneManager::flushCommands() {
 
     masterList_.push_back(std::move(branch.root));
   }
+  pendingBranches_.clear();
 }
 
 
@@ -144,3 +149,5 @@ void SceneManager::shutdown(){
   // as unique ptrs theyll kill down
   masterList_.clear();
 }
+
+

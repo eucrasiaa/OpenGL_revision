@@ -10,6 +10,7 @@
 #include "commandSource/TermInputService.hpp"
 #include "SceneManager/SceneManager.hpp"
 #include "InterpolateServer/InterpolateServer.hpp"
+#include "SceneManager/Scene.hpp"
 struct  wEngApplication {
   // destroyed bottom to top
   wEngApplication() {
@@ -23,6 +24,10 @@ struct  wEngApplication {
     inputStaticAccess_->sInstance_=inputManager_.get();
 
     sceneManager_ = std::make_unique<SceneManager>();
+    
+    sceneStaticAccess_ = std::make_unique<Scene>();
+    sceneStaticAccess_->sCommands_=dynamic_cast<ISceneCommand*>(sceneManager_.get());
+      
     windowServer_ = std::make_unique<OpenGLWindowServer>(inputManager_.get(), logger_.get());
     interpolateserver_ = std::make_unique<InterpolateServer>();
     renderServer_ = std::make_unique<RenderServer>(windowServer_.get(), interpolateserver_.get(), sceneManager_.get(), logger_.get());
@@ -38,10 +43,13 @@ struct  wEngApplication {
   std::unique_ptr<ILogger> logger_;
   // std::unique_ptr<ICommandSource> commandSource_;
   std::unique_ptr<IInputManager>  inputManager_;
+  
   std::unique_ptr<Input> inputStaticAccess_;
-
+  
   std::unique_ptr<ISceneManager> sceneManager_;
   
+  std::unique_ptr<Scene> sceneStaticAccess_;
+
   std::unique_ptr<OpenGLWindowServer>  windowServer_;
   std::unique_ptr<IInterpolateServer> interpolateserver_;
   std::unique_ptr<IRenderServer> renderServer_;

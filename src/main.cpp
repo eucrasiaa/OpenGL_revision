@@ -85,10 +85,12 @@ int main(int argc, char* argv[]) {
     childNode->addChild(new spawnerNode());
 
 
-    rootNode->printInfo(true);
 
     wApp.engine_->init();
+
     wApp.engine_->run();
+
+
 
   } catch (const std::exception& e) {
     std::cerr << "Fatal error: " << e.what() << std::endl;

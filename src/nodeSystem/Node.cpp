@@ -16,11 +16,11 @@ Node::~Node() {
   children_.clear();
 }
 void Node::addChild(Node* child) {
-  if (child) {
+  if (child && child->parent_ != this) {
     child->parent_ = this;
-    child->commands_=commands_;
+    // child->commands_=commands_;
     children_.push_back(child);
-    child->_enterTree();
+    // child->_enterTree();
   }
 }
 

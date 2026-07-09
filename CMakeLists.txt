@@ -57,6 +57,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     src/core/Managers
     src/core/InterpolateServer
     src/core/Managers/InputManager/InputAid
+    src/core/Managers/SceneManager
     ${CMAKE_CURRENT_SOURCE_DIR} #for the rest 
 )
 target_precompile_headers(${PROJECT_NAME} PRIVATE 
