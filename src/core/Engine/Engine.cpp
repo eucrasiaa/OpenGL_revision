@@ -8,6 +8,7 @@
 #include "RenderServer/IRenderServer.hpp"
 #include "InputManager/IInputManager.hpp"
 
+#include "SceneManager/ISceneManager.hpp"
 
 
 // #include <glad/glad.h>
@@ -75,9 +76,7 @@ void Engine::run() {
 
     while (accumulator >= FIXED_TIMESTEP) {
       // runGameLogic(FIXED_TIMESTEP);
-      for (Node *it : sceneNodes_){
-        it->update(FIXED_TIMESTEP);
-      }
+      sceneManager_->update(FIXED_TIMESTEP);
       // runEngineLogic(FIXED_TIMESTEP);
       accumulator -= FIXED_TIMESTEP;
     }
@@ -141,16 +140,16 @@ void Engine::run() {
 void Engine::addNode(Node* node) {
   // std::print(" From Engine: {:#x}\n", reinterpret_cast<std::uintptr_t>(node));
   if (node != nullptr) {
+    std::unique_ptr<Node> toAdd;
+    toAdd.reset(node);
+    sceneManager_->addNodeTree(std::move(toAdd));
     // sceneNodes_.push_back(node);
     // TODO pass off to scenemanager
   }
 }
 
 void Engine::shutdown() {
-  for (auto* node : sceneNodes_) {
-    delete node;
-  }
-  sceneNodes_.clear();
+  sceneManager_->shutdown();
   renderServer_->shutdown();
 }
 

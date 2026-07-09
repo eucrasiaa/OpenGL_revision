@@ -1,10 +1,14 @@
 #pragma once
+#include "nodeSystem/Node.hpp"
+#include <memory>
 // scene manager holds the true scene structures, alongside flat arrays of nodes for flat traversal where more efficient to do so
 class ISceneManager {
   public:
     virtual ~ISceneManager() = default;
-
-    // node user code execution
+    virtual void shutdown() = 0;
+    
+    virtual void addNodeTree(std::unique_ptr<Node> rootNode, Node* parentInScene = nullptr)=0;
+    // node user code execution=
     // FLAT ARRAY
     virtual void update(const double FIXED_DT)=0;
 

@@ -1,7 +1,53 @@
 #include "SceneManager.hpp"
 
+void SceneManager::update(double dt){
+  for (Node* it : iterList_){
+    it->update(dt);
+  }
+}
+
+void SceneManager::runEngineLogic(double dt){
+  return;
+}
+
+// must be tree walk
+void SceneManager::recalculateTransforms(){
+  for (auto* node : rootNodes_) {
+    if (node != nullptr) { 
+      node->_checkCalculate();
+    }
+  } 
+}
+
+
+void SceneManager::registerBranchElements(Node* node) {
+  if (!node) return;
+  node->_init(this); 
+  iterList_.push_back(node);
+
+
+  for (Node* child : node->getChildren()) {
+    registerBranchElements(child);
+  }
+}
+// void SceneManager::flushJustPending(){
+//
+// }
+
+void SceneManager::addNodeTree(std::unique_ptr<Node> rootNode, Node* parentInScene){
+  pendingBranches_.push_back({ std::move(rootNode), parentInScene });
+} 
+
 void SceneManager::requestSpawn(Node* parent, std::function<std::unique_ptr<Node>()> factory) {
   nodesToSpawn_.push_back({parent, factory});
+}
+
+void SceneManager::requestSpawn(Node* parent, std::function<Node*()> rawFactory) {
+    auto wrappedFactory = [rawFactory = std::move(rawFactory)]() -> std::unique_ptr<Node> {
+        Node* rawNode = rawFactory();
+        return std::unique_ptr<Node>(rawNode);
+    };
+    requestSpawn(parent, std::move(wrappedFactory));
 }
 
 void SceneManager::requestDestroy(Node* node) {
@@ -28,6 +74,7 @@ void SceneManager::flushCommands() {
     // remove from master list
     auto itMaster = std::find_if(masterList_.begin(), masterList_.end(), 
         [nodeToDelete](const std::unique_ptr<Node>& ptr) {
+        ptr->onDelete();
         return ptr.get() == nodeToDelete;
         });
 
@@ -42,23 +89,59 @@ void SceneManager::flushCommands() {
   //     auto bullet = std::make_unique<BulletNode>();
   //     return bullet;
   // });
-  
+
   // THEN do spawns
   for (auto& action : nodesToSpawn_) {
     // run the lambda?
     std::unique_ptr<Node> newNode = action.factory();
     Node* rawPtr = newNode.get();
+    // hand off command!! 
+    rawPtr->_init(this); 
 
-    // Link the tree hierarchy
+    //list 2
     if (action.parent) {
       action.parent->addChild(rawPtr);
     }
-
-    // Push to flat list for fast loops
+    //list 1
     iterList_.push_back(rawPtr);
-
-    // Relinquish unique ownership to the master lifetime manager
+    // handoff ownership
     masterList_.push_back(std::move(newNode));
   }
   nodesToSpawn_.clear();
+
+
+  for (auto& branch : pendingBranches_) {
+    Node* branchRootRaw = branch.root.get();
+
+    // Setup tree hierarchy attachment
+    if (branch.parent) {
+      branch.parent->addChild(branchRootRaw);
+    } 
+    else {
+      //is a root, so add to roots! 
+      rootNodes_.push_back(branchRootRaw); 
+      branchRootRaw->_enterTree();
+    }
+    //recursively walk
+    registerBranchElements(branchRootRaw);
+
+    masterList_.push_back(std::move(branch.root));
+  }
+}
+
+
+void SceneManager::shutdown(){
+  for (Node* node : iterList_) {
+    if (node) {
+      node->onDelete(); 
+    }
+  }
+  iterList_.clear();
+  rootNodes_.clear();
+  nodesToDestroy_.clear();
+
+  nodesToSpawn_.clear(); 
+  pendingBranches_.clear();
+  // as unique ptrs theyll kill down
+  masterList_.clear();
 }

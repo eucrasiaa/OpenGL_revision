@@ -16,6 +16,7 @@ class IRenderServer;
 class IInputManager;
 class ILogger;
 class ICommandSource;
+class ISceneManager;
 class Engine : public IEngine{
   private:
 
@@ -23,11 +24,10 @@ class Engine : public IEngine{
     IRenderServer* renderServer_ = nullptr;
     IInputManager* inputManager_ = nullptr; 
 
+    ISceneManager* sceneManager_ = nullptr; 
     ICommandSource* commandSrc_ = nullptr; 
     ILogger* logger_ = nullptr; 
     //owned 
-    std::vector<Node*> sceneNodes_; // change ptr type maybe 
-                                    // std::vector<std::unique_ptr<Node>> sceneNodes_; 
 
 
     // hand off to inputManager
@@ -60,13 +60,15 @@ class Engine : public IEngine{
   public:
 
     // explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ICommandSource* cmdSource, ILogger* logger) 
-    explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ILogger* logger) 
+    explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ISceneManager* sceneManager, ILogger* logger) 
       : renderServer_(renderServer),
       inputManager_(inputManager),
+      sceneManager_(sceneManager),
       // commandSrc_(cmdSource),
         logger_(logger){
         if (!renderServer_) { throw std::runtime_error("RenderServer cannot be null"); }
         if (!inputManager_) { throw std::runtime_error("MnputManager cannot be null"); }
+        if (!sceneManager_) { throw std::runtime_error("Scene Manager cannot be null"); }
         // if (!commandSrc_) { throw std::runtime_error("Command Source cannot be null"); }
         if (!logger_) { throw std::runtime_error("Logger cannot be null"); }
       }
@@ -84,6 +86,11 @@ class Engine : public IEngine{
     void shutdown();
     void addNode(Node* node);
     void removeNode(Node* node);
+
+
+    // calls off to other systems
+    // void runEngineLogic(const double FIXED_DT);
+
 
     bool isRunning() const { return isRunning_; }
     double getDeltaTime() const { return deltaTime_; }

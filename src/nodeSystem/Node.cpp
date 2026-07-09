@@ -19,6 +19,7 @@ void Node::addChild(Node* child) {
   if (child) {
     child->parent_ = this;
     children_.push_back(child);
+    child->_enterTree();
   }
 }
 
@@ -32,9 +33,11 @@ void Node::removeChild(Node* child) {
 }
 
 void Node::update(double dt) {
-  for (auto *elem : children_) {
-    elem->update(dt);
-  }
+  // update via flat list in scene elements, leave that logic to there!
+  return;
+  // for (auto *elem : children_) {
+  //   elem->update(dt);
+  // }
 }
 
 Node* Node::getParent() const { return parent_; }

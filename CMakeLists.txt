@@ -25,6 +25,7 @@ set(PROJECT_SOURCES
     src/core/RenderServer/RenderServer.cpp
     src/nodeSystem/Node.cpp
     src/core/Managers/InputManager/CoreInputManager.cpp
+    src/core/Managers/SceneManager/SceneManager.cpp
     # src/core/RenderServer/WindowServe/OpenGLWindowServer.cpp
 )
 

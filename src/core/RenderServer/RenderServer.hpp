@@ -16,11 +16,13 @@
 
 class ILogger;
 class IInterpolateServer;
+class ISceneManager;
 class RenderServer : public IRenderServer { 
   protected:
 
     IInterpolateServer* interpolateServer_ = nullptr;
-
+    ISceneManager* sceneManager_ = nullptr; 
+    
     // optinal deptendency
     ILogger* logger_ = nullptr;
     // built on scene change? 
@@ -32,13 +34,15 @@ class RenderServer : public IRenderServer {
    void resolveWorldTransform(EntityID id, double alpha);
 
   public:
-    explicit RenderServer(IWindowServer* windowServer, IInterpolateServer *interpolateServer, ILogger* logger = nullptr) 
+    explicit RenderServer(IWindowServer* windowServer, IInterpolateServer *interpolateServer, ISceneManager* sceneManager, ILogger* logger = nullptr) 
       : IRenderServer(windowServer), // Call base constructor here
       interpolateServer_(interpolateServer),
+      sceneManager_(sceneManager),
       logger_(logger) {
 
         if (!windowServer_) { throw std::runtime_error("RenderServer's windowServer cannot be null"); }
         if (!interpolateServer_) { throw std::runtime_error("renderserver's interpolation server cant be null!!!!");}
+        if (!sceneManager_) { throw std::runtime_error("Scene Manager (RS) cannot be null"); }
         if (!logger_) { throw std::runtime_error("RenderServer's windowServer cannot be null"); }
 
       }

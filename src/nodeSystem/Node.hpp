@@ -6,13 +6,17 @@
 
 
 // typedef unsigned long long EntityID;
-class IRenderServer;
-class Node {
+class ISceneCommand;
+class Node { 
+  private:
   protected:
     // injected
+    ISceneCommand* commands_ = nullptr;
+
     //children and parent
     std::vector<Node *> children_;
     Node* parent_=nullptr;
+
 
   public:
 
@@ -33,12 +37,22 @@ class Node {
         it->checkCalculate(parentTransform,parentIsDirty);
       }
     };
-
+    
+    //psudo protected. no reason to touch
     // ran on instance 
-    virtual void _init(){return;} 
-
+    virtual void _init(ISceneCommand* commands) {
+        commands_ = commands;
+    } 
     // called when attached as child 
-    virtual void _enterTree(){ return;}
+    // TODO tbd
+    virtual void _enterTree(){ 
+      return;
+    }
+
+
+    virtual void onDelete(){
+      return;
+    }
     
     // called before game run loop begins 
     virtual void ready() {return;}
