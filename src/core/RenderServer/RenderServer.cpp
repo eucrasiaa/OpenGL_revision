@@ -18,6 +18,10 @@ void RenderServer::render(double alpha, double elapsedTime){
   return;
 }
 
+void RenderServer::advanceInterpolate() {
+  interpolateServer_->advanceTick();
+  return;
+}
 
 
 bool RenderServer::pollServer() {
@@ -54,3 +58,5 @@ void RenderServer::resolveWorldTransform(EntityID id, double alpha) {
   entity.resolvedWorldMatrix = parentWorld * localMatrix;
   entity.resolved = true;
 }
+
+

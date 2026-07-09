@@ -30,10 +30,18 @@ class Engine : public IEngine{
                                     // std::vector<std::unique_ptr<Node>> sceneNodes_; 
 
 
-                                    //privs
+    // hand off to inputManager
     void handleEvents();
-    void update(double dt);
-    void render(double dt);
+
+    // node update, user code
+    // void runGameLogic(double dt);
+    //
+    // // backend code, physics, etc
+    // void runEngineLogic(double dt);
+    //
+    // // 
+    // void recalculateNodes(double dt);
+
 
 
     //game state
@@ -51,14 +59,15 @@ class Engine : public IEngine{
 
   public:
 
-    explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ICommandSource* cmdSource, ILogger* logger) 
+    // explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ICommandSource* cmdSource, ILogger* logger) 
+    explicit Engine(IRenderServer* renderServer, IInputManager* inputManager, ILogger* logger) 
       : renderServer_(renderServer),
       inputManager_(inputManager),
-      commandSrc_(cmdSource),
+      // commandSrc_(cmdSource),
         logger_(logger){
         if (!renderServer_) { throw std::runtime_error("RenderServer cannot be null"); }
         if (!inputManager_) { throw std::runtime_error("MnputManager cannot be null"); }
-        if (!commandSrc_) { throw std::runtime_error("Command Source cannot be null"); }
+        // if (!commandSrc_) { throw std::runtime_error("Command Source cannot be null"); }
         if (!logger_) { throw std::runtime_error("Logger cannot be null"); }
       }
     // explicit Engine(IRenderServer* renderServer) 

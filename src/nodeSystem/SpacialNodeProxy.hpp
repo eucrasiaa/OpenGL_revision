@@ -17,7 +17,7 @@ struct Vec3Proxy {
         Component y() { return {vec, dirty, 1}; }
         Component z() { return {vec, dirty, 2}; }
 
-        // Whole vector assignment: node.position = glm::vec3(1,2,3);
+        // assignments
         void operator=(const glm::vec3& other) { vec = other; dirty = true; }
         operator glm::vec3() const { return vec; }
     };
@@ -26,7 +26,7 @@ struct RotationProxy {
         glm::quat& quat;
         bool& dirty;
 
-        // Intercepts edits to individual Euler axes (X, Y, Z degrees or radians)
+        // make it euler for ease of write
         struct EulerComponent {
             glm::quat& q; bool& d; int idx;
             
@@ -45,7 +45,7 @@ struct RotationProxy {
         EulerComponent y() { return {quat, dirty, 1}; }
         EulerComponent z() { return {quat, dirty, 2}; }
 
-        // Allows replacing the whole quaternion natively
+        // Allows replacing the whole quaternion too
         void operator=(const glm::quat& other) { quat = other; dirty = true; }
         operator glm::quat() const { return quat; }
     };

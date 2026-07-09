@@ -45,7 +45,6 @@ struct MeshData {
 };
 
 // std430
-#pragma pack(push, 1) 
 struct Material {
     uint64_t albedoTexture             = 0; // glGetTextureHandleARB()
     uint64_t normalTexture             = 0;
@@ -53,9 +52,10 @@ struct Material {
     uint32_t pipelineID                = 0;
     float    metallic                  = 0.0f;
     float    roughness                 = 1.0f;
+    float padding[3]; //12 byte gap
     glm::vec4 albedoColor              = glm::vec4(1.0f);
 };
-#pragma pack(pop)
+// #pragma pack(pop)
 
 // layout(std140, binding = 1) uniform MaterialBuffer {
 //     Material materials[256];

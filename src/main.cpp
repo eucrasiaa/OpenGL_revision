@@ -72,8 +72,8 @@ int main(int argc, char* argv[]) {
     // Engine engine(&renderServer);
     wEngApplication wApp;
 
-    auto rootNode = new SpacialNode(wApp.renderServer_.get());
-    auto childNode = new SpacialNode(wApp.renderServer_.get());
+    auto rootNode = new SpacialNode();
+    auto childNode = new SpacialNode();
 
     rootNode->addChild(childNode);
     childNode->setPosition(glm::vec3(10.0f, 5.0f, 0.0f));

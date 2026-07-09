@@ -1,11 +1,13 @@
 #include "Node.hpp"
 #include <algorithm> 
 #include <stdexcept>
-
-Node::Node(IRenderServer* renderServer) : renderServer_(renderServer) {
-  if (!renderServer) {
-    throw std::runtime_error("RenderServer cannot be null");
-  }
+//
+// Node::Node(IRenderServer* renderServer) : renderServer_(renderServer) {
+//   if (!renderServer) {
+//     throw std::runtime_error("RenderServer cannot be null");
+//   }
+// }
+Node::Node() {
 }
 Node::~Node() {
   for (auto* child : children_) {

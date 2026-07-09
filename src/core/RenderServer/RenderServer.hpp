@@ -53,6 +53,9 @@ class RenderServer : public IRenderServer {
     virtual void render(double alpha, double elapsedTime) override;
     virtual bool pollServer() override;
 
+    // because it owns the Interpolation server properly and doesnt have nodes
+    // its the one to tell it to update its tick 
+    virtual void advanceInterpolate() override;
     virtual void resolveAllTransforms(double alpha) override;
 };
 

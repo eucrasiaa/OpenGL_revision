@@ -20,6 +20,10 @@ public:
       return true;
     }
 
+    virtual void advanceInterpolate() {
+      return;
+    }
+
     virtual void resolveAllTransforms(double alpha) {
       return;
     }

@@ -52,7 +52,7 @@ inline bool CoreInputManager::isReleased(ActionID action) const {
   uint8_t state = actionStates_[static_cast<uint8_t>(action)];
   return (state == 0b10); // prev down, curr up
 }
-inline Vec2 CoreInputManager::getVector(ActionID neg_x,ActionID pos_x,ActionID neg_y,ActionID pos_y){
+inline Vec2 CoreInputManager::getVector(ActionID neg_x,ActionID pos_x,ActionID neg_y,ActionID pos_y) const{
   float x = 0.0f, y = 0.0f;
   if (isHeld(neg_x))  x -= 1.0f;
   if (isHeld(pos_x)) x += 1.0f;
@@ -64,7 +64,7 @@ inline Vec2 CoreInputManager::getVector(ActionID neg_x,ActionID pos_x,ActionID n
 
 
 //TODO redo this logic when we do joystick input stuff lol
-inline float CoreInputManager::getAxis(ActionID neg_x,ActionID pos_x){
+inline float CoreInputManager::getAxis(ActionID neg_x,ActionID pos_x) const{
   float x = 0.0f;
   if (isHeld(neg_x))  x -= 1.0f;
   if (isHeld(pos_x)) x += 1.0f;

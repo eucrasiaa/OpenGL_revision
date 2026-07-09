@@ -53,8 +53,10 @@ void SpacialNode::computeTransforms(const glm::mat4& parentTransform) {
 
 
 
-
-
+// #include "Input.hpp" 
+// void SpacialNode::update(double dt){
+//   std::cout<<Input::getMovementAxis().x<<", "<<Input::getMovementAxis().y<<std::endl;
+// }
 
 
 

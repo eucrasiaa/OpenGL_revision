@@ -3,6 +3,7 @@
 
 #include <glm/ext/quaternion_float.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "SpacialNodeProxy.hpp"
 class SpacialNode : public Node {
 
   private:
@@ -30,10 +31,15 @@ class SpacialNode : public Node {
     glm::vec3 forward_ = glm::vec3(0.0f, 0.0f, -1.0f); 
     glm::vec3 up_      = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 right_   = glm::vec3(1.0f, 0.0f, 0.0f);
-    
+   
+    Vec3Proxy position() { return {position_, localDirty_}; }
+    Vec3Proxy scale()    { return {scale_, localDirty_}; }
+    RotationProxy rotation() { return {quaternion_, localDirty_}; }
+
     bool localDirty_  = true;  // same one. position/rotation/scale changed
     bool globalDirty_ = true;  // parent chain changed
-
+    
+    bool independentPos = false; // for spawned types, where they shouldnt transform along parent, but should still be owned by them
     // bool isDirty_ = true; // for initial sync math!  
 
     // GLuint64 textureHandle_ = 0;
@@ -57,6 +63,8 @@ class SpacialNode : public Node {
     void setScale(const glm::vec3& scale);
     void markDirty();
 
+
+    // virtual void update(double dt) override;
     // void setTextureHandle(GLuint64 handle) { textureHandle_ = handle; }
     // void setRenderLayer(RenderLayer layer) { renderLayer_ = layer; }
 

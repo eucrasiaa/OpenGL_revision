@@ -1,12 +1,11 @@
 #include "Engine.hpp"
-#include "RenderServer/RenderServer.hpp"
 #include "Node.hpp"
 #include <SDL_error.h>
 #include <SDL_events.h>
 #include <SDL_timer.h>
 
 #include "Logger/ILogger.hpp"
-#include "Logger/LoggerBasic.hpp"
+#include "RenderServer/IRenderServer.hpp"
 #include "InputManager/IInputManager.hpp"
 
 
@@ -19,11 +18,6 @@ bool Engine::init() {
   return true;
 }
 
-void Engine::update(double dt) {
-  for (auto *node : sceneNodes_){
-    node->update(dt);
-  }
-}
 // #define PERFORMANCE
 
 void Engine::run() {
@@ -80,7 +74,11 @@ void Engine::run() {
 
 
     while (accumulator >= FIXED_TIMESTEP) {
-      update(FIXED_TIMESTEP);
+      // runGameLogic(FIXED_TIMESTEP);
+      for (Node *it : sceneNodes_){
+        it->update(FIXED_TIMESTEP);
+      }
+      // runEngineLogic(FIXED_TIMESTEP);
       accumulator -= FIXED_TIMESTEP;
     }
 #ifdef PERFORMANCE
@@ -88,18 +86,29 @@ void Engine::run() {
     PERFORMANCE_totalUpdateTicks += (endUpdate - startUpdate);
     uint64_t startRecalc = SDL_GetPerformanceCounter();
 #endif
-    render(elapsedTime); // loads renderServer if needed
-                         // Get::Renderer().render(elapsedTime);
+
+    // recalculate matric in prep for interpolate
+    // recalculateNodes(elapsedTime);
+
+
 #ifdef PERFORMANCE
     uint64_t endRecalc= SDL_GetPerformanceCounter();
     PERFORMANCE_totalRecalcTicks += (endRecalc - startRecalc);
+#endif 
+    
+
+
+    // renderServer_->advanceInterpolate();
+
+
+
+#ifdef PERFORMANCE
     uint64_t startRender = SDL_GetPerformanceCounter();
 #endif 
+
+    // passes off to renderserver to draw 
+    // thats interpolate calc, and use that to draw 
     renderServer_->render(alpha_interp, elapsedTime);
-    // RenderServer::Get().render(elapsedTime);
-#ifdef DEBUG_WINDOW
-    RenderServer::Get().DrawDebug();
-#endif
 
 #ifdef PERFORMANCE 
     uint64_t endRender = SDL_GetPerformanceCounter();
@@ -132,7 +141,8 @@ void Engine::run() {
 void Engine::addNode(Node* node) {
   // std::print(" From Engine: {:#x}\n", reinterpret_cast<std::uintptr_t>(node));
   if (node != nullptr) {
-    sceneNodes_.push_back(node);
+    // sceneNodes_.push_back(node);
+    // TODO pass off to scenemanager
   }
 }
 
@@ -145,13 +155,28 @@ void Engine::shutdown() {
 }
 
 
-void Engine::render(double ft) {
-  for (auto* node : sceneNodes_) {
-    if (node != nullptr) { 
-      continue;
-    }
-  } 
-}
+
+// void Engine::runGameLogic(double dt) {
+//   for (auto *node : sceneNodes_){
+//     if (node != nullptr) { 
+//       node->update(dt);
+//     }
+//   }
+// }
+//
+//
+// void Engine::runEngineLogic(double dt) {
+//   //TODO calls to physics, etc
+//   return;
+// }
+//
+// void Engine::recalculateNodes(double ft)=0;{
+//   for (auto* node : sceneNodes_) {
+//     if (node != nullptr) { 
+//       node->_checkCalculate();
+//     }
+//   } 
+// }
 
 void Engine::handleEvents() {
  // CALL THE WINDOW POLL -ER 
