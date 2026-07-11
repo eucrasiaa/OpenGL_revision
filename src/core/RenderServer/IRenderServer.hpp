@@ -1,6 +1,6 @@
 #pragma once
-#include "RenderUtils/RenderTypes.hpp"
 #include <glm/glm.hpp>
+#include <stdexcept>
 
 class IWindowServer;
 class IRenderServer {

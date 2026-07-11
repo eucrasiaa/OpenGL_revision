@@ -81,29 +81,11 @@ int main(int argc, char* argv[]) {
     // childNode->setTextureHandle(0);
     std::print(" From Main: {:#x}\n", reinterpret_cast<std::uintptr_t>(rootNode));
    
-
-    auto sn = new spawnerNode();
-    auto sn2 = new spawnerNode();
-    auto sn3 = new spawnerNode();
+    //
+    // auto sn = new spawnerNode();
+    // auto sn2 = new spawnerNode();
+    // auto sn3 = new spawnerNode();
     wApp.engine_->addNode(rootNode);
-    sn->addChild(new spawnerNode());
-    sn->addChild(new spawnerNode());
-    sn->addChild(new spawnerNode());
-    sn->addChild(new spawnerNode());
-
-    sn2->addChild(new spawnerNode());
-    sn2->addChild(new spawnerNode());
-    sn2->addChild(new spawnerNode());
-    sn2->addChild(new spawnerNode());
-
-    sn3->addChild(new spawnerNode());
-    sn3->addChild(new spawnerNode());
-    sn3->addChild(new spawnerNode());
-    sn3->addChild(new spawnerNode());
-
-    wApp.engine_->addNode(sn);
-    wApp.engine_->addNode(sn2);
-    wApp.engine_->addNode(sn3);
 
     wApp.engine_->init();
 

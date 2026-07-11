@@ -1,6 +1,10 @@
 #pragma once
 #include <glm/ext/matrix_float4x4.hpp>
-#include "MeshManager/MeshTypes.hpp"
+#include <Managers/MeshTypes.hpp>
+
+#include <Managers/MaterialTypes.hpp>
+#include <NodeTypes.hpp>
+
 enum class RenderLayer{
   RIL_OPAQUE,
   RIL_TRANSPARENT,
@@ -16,12 +20,11 @@ enum class RenderLayer{
 //   uint64_t id;
 // };
 
-typedef uint64_t EntityID;
 
 struct DrawCommand {
     EntityID entityID; // for interpolation lookup
     MeshHandle mesh;
-    Material material;
+    MaterialHandle material;
     RenderLayer layer;
     // transform from InterpolateService
     // VAO / index from MeshHandle

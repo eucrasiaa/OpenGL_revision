@@ -1,11 +1,9 @@
 #pragma once
 #include <glm/ext/matrix_float4x4.hpp>
 #include <vector>
-#include "RenderUtils/RenderTypes.hpp"
 #include <print>
 
-
-// typedef unsigned long long EntityID;
+#include "NodeTypes.hpp"
 class ISceneCommand;
 class Node { 
   private:

@@ -2,6 +2,7 @@
 #include "SpacialNode.hpp"
 #include "Scene.hpp"
 #include <glm/ext/vector_float3.hpp>
+#include <iostream>
     void spawnerNode::_enterTree(){
 
       Scene::spawn(this, []() { 

@@ -8,6 +8,8 @@
 // #include <glm/gtc/type_ptr.hpp>
 
 #include "IRenderServer.hpp"
+#include "NodeTypes.hpp"
+#include "RenderUtils/RenderTypes.hpp"
 #include <glad/glad.h>
 #include <SDL_video.h>
 #include <string>

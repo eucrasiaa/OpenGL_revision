@@ -1,60 +1,31 @@
 #pragma once
-
 #include <glm/ext/vector_float4.hpp>
-#include <glad/glad.h>
-struct MeshHandle { uint32_t id; };
-
-struct MaterialHandle { 
-  uint32_t id; // to MeshManager 
-               // finds VAO, VBO, indexCount, vertex format
-};
-
-//TEMP!!! 
-// using vec4s even though they should only need vec3 for padding stuff 
-// AABB stuff
-struct BoundingBox {
-    glm::vec4 center;  // midpoint 
-    glm::vec4 extents; // half-widths (dist center -> edges)
-};
-
-// bb box center to world space 
-// cull with AABB against camera?
 
 
-// i assume this looks like the thing that builds uniforms?
-struct VertexAttribute {
-    GLuint location; // glsl location
-    GLint size;      // comp count  
-    GLenum type;     // GL_FLOAT, GL_HALF_FLOAT
-    GLboolean normalized;
-    GLuint relativeOffset; // Offset from the start of the vertex data
-};
-struct VertexFormat{
-    uint32_t stride;     // bytes per vertex 
-    std::vector<VertexAttribute> attributes;
-};
+// to TextureManager 
+// finds Material Struct 
+struct MaterialHandle { uint32_t id;};
 
-struct MeshData {
-  GLuint vao;
-  GLuint vbo;
-  GLuint ebo;
-  uint32_t indexCount;
-  GLenum indexType;
-  VertexFormat format;
-  BoundingBox bounds; //culling.
-};
+
 
 // std430
 struct Material {
     uint64_t albedoTexture             = 0; // glGetTextureHandleARB()
     uint64_t normalTexture             = 0;
     uint64_t metallicRoughnessTexture  = 0;
+
+
     uint32_t pipelineID                = 0;
+
+
     float    metallic                  = 0.0f;
     float    roughness                 = 1.0f;
     float padding[3]; //12 byte gap
     glm::vec4 albedoColor              = glm::vec4(1.0f);
 };
+
+
+
 // #pragma pack(pop)
 
 // layout(std140, binding = 1) uniform MaterialBuffer {
