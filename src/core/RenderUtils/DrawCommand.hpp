@@ -5,6 +5,7 @@
 #include <Managers/MaterialTypes.hpp>
 #include <NodeTypes.hpp>
 
+
 enum class RenderLayer{
   RIL_OPAQUE,
   RIL_TRANSPARENT,
@@ -13,6 +14,7 @@ enum class RenderLayer{
   RIL_SKYBOX,
   RIL_POSTPROCESS_WORLD,
   RIL_POSTPROCESS_SCREEN,
+  RIL_BILLBOARD_2D,
   RIL_CAMERA
 };
 
