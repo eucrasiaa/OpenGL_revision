@@ -44,16 +44,14 @@ struct  wEngApplication {
   std::unique_ptr<ILogger> logger_;
   // std::unique_ptr<ICommandSource> commandSource_;
   std::unique_ptr<IInputManager>  inputManager_;
-  
   std::unique_ptr<Input> inputStaticAccess_;
-  
   std::unique_ptr<ISceneManager> sceneManager_;
-  
   std::unique_ptr<Scene> sceneStaticAccess_;
 
   std::unique_ptr<OpenGLWindowServer>  windowServer_;
   std::unique_ptr<IInterpolateServer> interpolateserver_;
   std::unique_ptr<IRenderServer> renderServer_;
   std::unique_ptr<IEngine> engine_;
+
 
 };

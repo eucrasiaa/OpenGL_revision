@@ -1,6 +1,12 @@
 #pragma once
 #define RENDERINSTANCE_DBG
 
+
+// minimum log severity level
+// #define MIN_LOG_WARN
+// #define MIN_LOG_ERROR
+  
+
 // #define NODE_DEBUG 
 // #define RENDERSERVER_DEBUG
 // #define CAMERA_DEBUG

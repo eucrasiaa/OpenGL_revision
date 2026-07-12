@@ -1,13 +1,13 @@
 #pragma once
 #include <string_view>
 enum class LogLevel {
-    Trace,
-    Debug,
-    Info,
-    Warning,
-    Error,
-    Critical,
-    Misc
+  Misc,
+  Info,
+  Debug,
+  Trace,
+  Warning,
+  Error,
+  Critical,
 };
 class ILogger { 
 public:
