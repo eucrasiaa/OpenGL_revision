@@ -8,6 +8,24 @@
 #include <iostream>
 
 
+struct InstanceData {
+    glm::mat4 modelMatrix;    // 64 bytes
+    uint32_t materialIndex;   // 4 bytes (SSBO index)
+    uint32_t entityID;        // 4 bytes
+    uint32_t padding[2];      // 8 bytes alignment
+};
+
+struct DrawBucket {
+    RenderLayer layer;
+    uint32_t pipelineID;
+    MeshHandle mesh;
+    std::vector<InstanceData> instances;
+    
+    // For sorting
+    uint64_t sortKey;
+};
+
+
 struct RenderEntity {
   EntityID id;
   EntityID parentID;  // 0 = root

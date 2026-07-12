@@ -4,7 +4,7 @@
 
 #include "glad/glad.h"
 #include "Logger/ILogger.hpp"
-
+#include "RenderUtils/RenderTypes.hpp" // for InstanceData
 void MeshManager::initializeVAOTemplates(){
   // 3d basic 
   glCreateVertexArrays(1, &vaoTemplate3D_);

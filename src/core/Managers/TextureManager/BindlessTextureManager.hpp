@@ -21,8 +21,8 @@ class BindlessTextureManager : public ITextureManager {
   ILogger *logger_ = nullptr;
 
   public: 
-    virtual uint64_t loadTexture(std::string_view filePath, bool useLinear = false) override;
-    virtual void releaseTexture(uint64_t handle) override;
+    virtual TextureHandle loadTexture(std::string_view filePath, bool useLinear = false) override;
+    virtual void releaseTexture(TextureHandle handle) override;
 
     virtual void init(void * Logger=nullptr) override;
 };

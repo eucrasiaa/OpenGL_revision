@@ -24,7 +24,7 @@ void BindlessTextureManager::init(void * Logger){
   glSamplerParameteri(nearestSampler_, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-uint64_t BindlessTextureManager::loadTexture(std::string_view filePath, bool useLinear){ 
+TextureHandle BindlessTextureManager::loadTexture(std::string_view filePath, bool useLinear){ 
 
   std::string lookupKey;
   lookupKey.reserve(filePath.size() + 1);
@@ -34,7 +34,7 @@ uint64_t BindlessTextureManager::loadTexture(std::string_view filePath, bool use
   if (it != textureCache_.end()) {
     logger_->log(LogLevel::Info, "Image already found: " + std::string(filePath));
     it->second.refCount++;
-    return it->second.handle;
+    return {it->second.handle};
   }
   logger_->log(LogLevel::Info, "Loading new image: " + std::string(filePath));
   int localWidth = 0;
@@ -45,7 +45,7 @@ uint64_t BindlessTextureManager::loadTexture(std::string_view filePath, bool use
   if (!imageData) {
     logger_->log(LogLevel::Critical, "Failed to laod image!! name was " + std::string(filePath));
     // std::cerr<<"failed to load image, name was: "<<filePath<<"\n";
-    return 0; 
+    return {0}; 
   }
 
   logger_->log(LogLevel::Info, std::format("\tW: {}  H: {}  C: {}, Linear? {}",localWidth, localHeight,localChannels, useLinear));
@@ -88,10 +88,10 @@ uint64_t BindlessTextureManager::loadTexture(std::string_view filePath, bool use
 
   handleToKeyMap_[handle] = lookupKey;
 
-  return 0;
+  return {handle};
 }
-void BindlessTextureManager::releaseTexture(uint64_t handle) {
-  auto handleIt = handleToKeyMap_.find(handle); 
+void BindlessTextureManager::releaseTexture(TextureHandle handle) {
+  auto handleIt = handleToKeyMap_.find(handle.id); 
   if (handleIt == handleToKeyMap_.end()) {
     logger_->log(LogLevel::Warning, "attempted to release handle, but not found in list!");
     return; 

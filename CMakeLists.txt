@@ -32,8 +32,11 @@ set(PROJECT_SOURCES
     src/nodeSystem/SpacialNode.cpp
     src/nodeSystem/TestingNode.cpp
     src/core/Managers/MeshManager/MeshManager.cpp 
-    src/core/Managers/TextureManager/BindlessTextureManager.cpp 
 
+    src/core/Managers/AssetManager/AssetManager.cpp 
+    src/core/Managers/MaterialManager/MaterialManager.cpp 
+    src/core/Managers/TextureManager/BindlessTextureManager.cpp 
+    src/core/RenderScene/RenderScene.cpp
     # src/core/RenderServer/WindowServe/OpenGLWindowServer.cpp
 )
 

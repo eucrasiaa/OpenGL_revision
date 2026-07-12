@@ -43,10 +43,12 @@ struct Vertex2D {
 
 // Billboard uses 3d but has a single quad vbo 
 
-// all VAOs have this 
-struct InstanceData {
-    glm::mat4 modelMatrix;
-    uint32_t materialIndex;
-    uint32_t entityID;
-    uint32_t padding[2];
-};
+
+// now under RenderTypes!!!
+// // all VAOs have this 
+// struct InstanceData {
+//     glm::mat4 modelMatrix;
+//     uint32_t materialIndex;
+//     uint32_t entityID;
+//     uint32_t padding[2];
+// };

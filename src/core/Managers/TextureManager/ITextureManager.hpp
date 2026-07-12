@@ -8,10 +8,10 @@ class ITextureManager {
 public:
   virtual ~ITextureManager() = default;
 
-  virtual uint64_t loadTexture(std::string_view filePath, bool useLinear = false) = 0;
-  virtual void releaseTexture(uint64_t handle) = 0;
+  virtual TextureHandle loadTexture(std::string_view filePath, bool useLinear = false) = 0;
+  virtual void releaseTexture(TextureHandle handle) = 0;
 
-  virtual uint64_t loadTexture(const std::string& filePath, bool useLinear = false) {
+  virtual TextureHandle loadTexture(const std::string& filePath, bool useLinear = false) {
     return loadTexture(std::string_view(filePath), useLinear); 
   }
 
