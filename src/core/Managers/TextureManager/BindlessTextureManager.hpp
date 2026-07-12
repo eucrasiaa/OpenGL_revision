@@ -1,5 +1,6 @@
 #pragma once 
 #include "ITextureManager.hpp"
+#include <glad/glad.h>
 
 class ILogger;
 class BindlessTextureManager : public ITextureManager {

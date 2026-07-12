@@ -31,6 +31,9 @@ set(PROJECT_SOURCES
     src/core/WindowServer/OpenGLWindowServer.cpp
     src/nodeSystem/SpacialNode.cpp
     src/nodeSystem/TestingNode.cpp
+    src/core/Managers/MeshManager/MeshManager.cpp 
+    src/core/Managers/TextureManager/BindlessTextureManager.cpp 
+
     # src/core/RenderServer/WindowServe/OpenGLWindowServer.cpp
 )
 
@@ -40,7 +43,8 @@ set(PROJECT_SOURCES
 #
 file(GLOB_RECURSE PROJECT_HEADERS 
     "include/*.h" "include/*.hpp"
-    "src/*.h" "src/*.hpp"
+    "src/*.h" "src/*.hpp" 
+    "third_party/tiny_obj_loader.h"
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS})

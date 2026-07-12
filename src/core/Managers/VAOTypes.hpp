@@ -16,6 +16,13 @@ struct Vertex3D {
     glm::vec3 normal;
     glm::vec2 uv;
     glm::vec4 tangent;
+
+    bool operator<(const Vertex3D& other) const {
+      if (position != other.position) return position.x < other.position.x || (position.x == other.position.x && (position.y < other.position.y || (position.y == other.position.y && position.z < other.position.z)));
+      if (normal != other.normal) return normal.x < other.normal.x || (normal.x == other.normal.x && (normal.y < other.normal.y || (normal.y == other.normal.y && normal.z < other.normal.z)));
+      if (uv != other.uv) return uv.x < other.uv.x || (uv.x == other.uv.x && uv.y < other.uv.y);
+      return tangent.x < other.tangent.x; // Basic tie-breaker for tangents
+    }
 };
 
 // struct Vertex3D {

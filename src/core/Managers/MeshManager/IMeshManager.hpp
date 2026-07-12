@@ -6,6 +6,9 @@ class IMeshManager{
 
   public: 
     virtual ~IMeshManager() = default;
-    virtual MeshHandle LoadMesh(const std::string& objPath)= 0;
+    virtual MeshHandle loadMesh(const std::string& objPath)= 0;
     virtual void initalize(void * mystery) = 0; 
+    virtual MeshData* getMesh(MeshHandle handle) =0;
+
+    virtual void unloadMesh(MeshHandle handle) =0;
 };

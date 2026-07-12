@@ -1,5 +1,3 @@
-#pragma once
-
 #include "InterpolateServer.hpp"
 
 glm::mat4 InterpolateServer::makeLocalMatrix(const glm::vec3& pos, const glm::quat& rot, const glm::vec3& scl) const{
